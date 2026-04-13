@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import AdminCard from '@/components/AdminCard';
 
 export default function ContactsList() {
   const router = useRouter();
@@ -42,7 +43,6 @@ export default function ContactsList() {
         body: JSON.stringify({ is_read: !currentStatus }),
       });
       if (res.ok) {
-        // Refresh daftar setelah update
         fetchContacts();
       } else {
         alert('Gagal mengubah status');
@@ -53,38 +53,61 @@ export default function ContactsList() {
     }
   };
 
-  if (loading) return <p className="text-center py-10">Memuat pesan...</p>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <div className="w-10 h-10 border-4 border-white/5 border-t-brass rounded-full animate-spin"></div>
+    </div>
+  );
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Pesan Kontak Masuk</h1>
-      {contacts.length === 0 && <p className="text-gray-500">Belum ada pesan.</p>}
-      <div className="space-y-5">
-        {contacts.map((msg: any) => (
-          <div key={msg.id} className={`border rounded-xl p-5 shadow-sm transition ${msg.is_read ? 'bg-gray-50' : 'bg-white border-l-4 border-l-blue-500'}`}>
-            <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-2">
-              <div>
-                <strong className="text-lg text-blue-800">{msg.name}</strong>
-                <p className="text-gray-600 text-sm">Email: {msg.email}</p>
+    <div className="animate-fade-in-up">
+      <header className="mb-16">
+        <span className="text-brass font-black tracking-[0.4em] uppercase text-[10px] mb-4 block">Signal Intelligence</span>
+        <h1 className="text-5xl font-black text-white tracking-tighter uppercase leading-none">Intersepsi <br/>Pesan Masuk.</h1>
+        <p className="text-white/30 text-[10px] mt-4 uppercase tracking-[0.2em] font-black italic">Monitoring Transmisi Eksternal</p>
+      </header>
+
+      {contacts.length === 0 ? (
+        <div className="text-center py-32 border-2 border-dashed border-white/5 rounded-[3rem]">
+          <p className="text-white/10 font-black tracking-[0.4em] text-[10px] uppercase">No Signals Detected in this Frequency</p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {contacts.map((msg: any) => (
+            <AdminCard key={msg.id} className={`transition-all duration-500 ${!msg.is_read ? 'border-l-4 border-l-seafoam' : ''}`}>
+              <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6 mb-8">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-4 mb-2">
+                     <span className={`w-2 h-2 rounded-full ${msg.is_read ? 'bg-white/10' : 'bg-seafoam animate-pulse shadow-[0_0_10px_#82eefd]'}`} />
+                     <strong className="text-2xl font-black text-white uppercase tracking-tighter group-hover:text-navy transition-colors">{msg.name}</strong>
+                  </div>
+                  <p className="text-white/30 group-hover:text-navy/40 font-bold text-[10px] uppercase tracking-widest pl-6">Source: {msg.email}</p>
+                </div>
+                <div className="text-[10px] font-black text-white/20 group-hover:text-navy/20 uppercase tracking-widest bg-white/5 group-hover:bg-navy/5 px-4 py-2 rounded-full border border-white/5 group-hover:border-navy/5 transition-all">
+                  T-Log: {new Date(msg.created_at).toLocaleString('id-ID')}
+                </div>
               </div>
-              <div className="text-sm text-gray-500">{new Date(msg.created_at).toLocaleString()}</div>
-            </div>
-            <p className="mt-3 text-gray-700 whitespace-pre-wrap border-t pt-3">{msg.message}</p>
-            <div className="mt-4">
-              <button
-                onClick={() => toggleRead(msg.id, msg.is_read)}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
-                  msg.is_read
-                    ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                    : 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                }`}
-              >
-                {msg.is_read ? '✓ Sudah dibaca' : '○ Tandai sudah dibaca'}
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+              
+              <div className="bg-navy/40 group-hover:bg-navy/5 rounded-3xl p-8 mb-8 border border-white/5 group-hover:border-navy/5 transition-all">
+                <p className="text-white/60 group-hover:text-navy/70 leading-relaxed font-medium whitespace-pre-wrap">{msg.message}</p>
+              </div>
+
+              <div className="flex justify-end">
+                <button
+                  onClick={() => toggleRead(msg.id, msg.is_read)}
+                  className={`px-10 py-4 rounded-full text-[9px] font-black uppercase tracking-[0.3em] transition-all duration-500 shadow-xl ${
+                    msg.is_read
+                      ? 'bg-white/5 text-white/40 hover:bg-white hover:text-navy'
+                      : 'bg-brass text-navy hover:bg-white'
+                  }`}
+                >
+                  {msg.is_read ? '✓ Archived Signal' : '○ Mark as Read'}
+                </button>
+              </div>
+            </AdminCard>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

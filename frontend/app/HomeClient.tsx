@@ -1,145 +1,10 @@
-// app/HomeClient.tsx
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import RevealSection from "@/components/RevealSection";
+import NauticalModal from "@/components/NauticalModal";
 
-// ========== HOOK SCROLL REVEAL ==========
-const useScrollReveal = () => {
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.1, rootMargin: "0px" }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  return { ref, isVisible };
-};
-
-const RevealSection = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
-  const { ref, isVisible } = useScrollReveal();
-  return (
-    <div
-      ref={ref as any}
-      className={`transition-all duration-500 ease-out ${
-        isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
-      } ${className}`}
-    >
-      {children}
-    </div>
-  );
-};
-
-// ========== HERO CAROUSEL ==========
-const HeroCarousel = () => {
-  const slides = [
-    {
-      image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=900",
-      title: "Menjaga Laut, Menyejahterakan Nelayan",
-      desc: "Perikanan berkelanjutan untuk masa depan Indonesia",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2070&auto=format",
-      title: "Teknologi Ramah Lingkungan",
-      desc: "Inovasi untuk hasil tangkapan optimal tanpa merusak ekosistem",
-    },
-    {
-      image: "https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=900",
-      title: "Kolaborasi & Edukasi",
-      desc: "Bersama nelayan dan komunitas pesisir",
-    },
-  ];
-
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [slides.length]);
-
-  return (
-    <div className="relative w-full h-screen overflow-hidden">
-      {slides.map((slide, idx) => (
-        <div
-          key={idx}
-          className={`absolute inset-0 transition-opacity duration-700 ${
-            idx === current ? "opacity-100 z-10" : "opacity-0 z-0"
-          }`}
-        >
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${slide.image})` }}>
-            <div className="absolute inset-0 bg-black/30"></div>
-          </div>
-          <div className="relative h-full flex items-center justify-center text-center text-white px-4">
-            <div className="max-w-4xl animate-fade-in-up">
-              <h1 className="text-4xl md:text-7xl font-extrabold mb-4 drop-shadow-lg tracking-tight">
-                {slide.title}
-              </h1>
-              <p className="text-lg md:text-2xl mb-8 font-light">{slide.desc}</p>
-              <Link
-                href="/contact"
-                className="inline-block bg-white text-blue-800 px-8 py-4 rounded-full font-semibold shadow-xl hover:bg-gray-100 transition transform hover:scale-105 duration-300"
-              >
-                Gabung Bersama Kami
-              </Link>
-            </div>
-          </div>
-        </div>
-      ))}
-      <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-20">
-        {slides.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrent(idx)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              idx === current ? "bg-white w-6" : "bg-white/50"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
-
-// ========== MODAL COMPONENT ==========
-const Modal = ({ isOpen, onClose, title, description, image }: any) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm transition-all">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-fade-in-up">
-        {image && (
-          <div className="relative h-64 w-full overflow-hidden rounded-t-2xl">
-            <img src={image} alt={title} className="w-full h-full object-cover" />
-          </div>
-        )}
-        <div className="p-6 md:p-8">
-          <h3 className="text-2xl md:text-3xl font-bold text-blue-800 mb-4">{title}</h3>
-          <div className="text-gray-600 leading-relaxed space-y-4" dangerouslySetInnerHTML={{ __html: description }} />
-          <button
-            onClick={onClose}
-            className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition"
-          >
-            Tutup
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ========== CLIENT COMPONENT ==========
 interface HomeClientProps {
   services: any[];
   portfolios: any[];
@@ -149,113 +14,191 @@ interface HomeClientProps {
 
 export default function HomeClient({ services, portfolios, allPages, aboutFishery }: HomeClientProps) {
   const [selectedProject, setSelectedProject] = useState<any>(null);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <main className="bg-white overflow-hidden font-sans">
-      <HeroCarousel />
-
-      {/* Tentang Perikanan - dengan max-w-5xl */}
-      {aboutFishery && aboutFishery.content && (
-        <RevealSection>
-          <section className="w-full py-20 bg-white">
-            <div className="max-w-5xl mx-auto px-6">
-              <div className="text-center mb-8">
-                <span className="text-blue-600 font-semibold tracking-wide uppercase text-sm">Tentang Kami</span>
-                <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mt-2">{aboutFishery.title}</h2>
-                <div className="w-20 h-1 bg-blue-500 mx-auto mt-4 rounded-full"></div>
-              </div>
-              <div
-                className="prose prose-lg text-gray-600 mx-auto text-justify leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: aboutFishery.content }}
-              />
-            </div>
-          </section>
-        </RevealSection>
-      )}
-
-      {/* Layanan Kami - dengan max-w-7xl */}
-      <RevealSection>
-        <section className="w-full py-20 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-16">
-              <span className="text-blue-600 font-semibold tracking-wide uppercase text-sm">Layanan</span>
-              <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mt-2">Perikanan & Kelautan</h2>
-              <div className="w-20 h-1 bg-blue-500 mx-auto mt-4 rounded-full"></div>
-              <p className="text-gray-500 mt-4 max-w-2xl mx-auto">Solusi lengkap untuk ekosistem perikanan modern</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              {services.map((service: any) => (
-                <div
-                  key={service.id}
-                  className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 hover:border-blue-200 text-center hover:-translate-y-2"
-                >
-                  <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl transition-transform group-hover:scale-110 duration-300">
-                    {service.icon || "🐟"}
-                  </div>
-                  <h3 className="text-xl font-bold text-blue-800 mb-3">{service.title}</h3>
-                  <p className="text-gray-500">{service.description}</p>
-                </div>
-              ))}
-            </div>
+    <main className="bg-navy overflow-hidden font-sans">
+      
+      {/* IMMERSIVE OCEAN HERO */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-navy/30 via-transparent to-navy z-10" />
+          <img 
+            src="https://images.unsplash.com/photo-1518837691462-13619b76ad89?q=80&w=2070&auto=format" 
+            alt="Deep Ocean" 
+            className="w-full h-full object-cover scale-110"
+            style={{ transform: `scale(1.1) translateY(${scrollY * 0.2}px)` }}
+          />
+          {/* Bubbles Overlay */}
+          <div className="absolute inset-0 z-10 pointer-events-none opacity-20">
+             <div className="bobbing absolute top-[20%] left-[10%] w-4 h-4 rounded-full bg-white blur-sm"></div>
+             <div className="bobbing-delayed absolute top-[50%] right-[15%] w-6 h-6 rounded-full bg-white blur-md"></div>
+             <div className="bobbing absolute bottom-[30%] left-[40%] w-3 h-3 rounded-full bg-white blur-sm"></div>
           </div>
-        </section>
-      </RevealSection>
-
-      {/* Proyek Unggulan dengan Modal - max-w-7xl */}
-      <RevealSection>
-        <section className="w-full py-20 bg-white">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-16">
-              <span className="text-blue-600 font-semibold tracking-wide uppercase text-sm">Portofolio</span>
-              <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mt-2">Proyek Unggulan</h2>
-              <div className="w-20 h-1 bg-blue-500 mx-auto mt-4 rounded-full"></div>
-              <p className="text-gray-500 mt-4">Inisiatif nyata yang telah kami lakukan</p>
+        </div>
+        
+        <div className="relative z-20 max-w-7xl mx-auto px-6 text-center mt-13">
+          <RevealSection>
+            <div className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-brass text-[10px] font-black tracking-[0.4em] uppercase mb-10 shadow-2xl">
+              <span className="animate-pulse ">⚓</span> Maritime Technology Leader
             </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              {portfolios.slice(0, 3).map((project: any) => (
-                <div
-                  key={project.id}
-                  className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-2 flex flex-col"
-                >
-                  {project.image && (
-                    <div className="overflow-hidden h-56">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
-                      />
-                    </div>
-                  )}
-                  <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="text-xl font-bold text-blue-800 mb-2">{project.title}</h3>
-                    <p className="text-gray-500 line-clamp-3 mb-4">{project.description}</p>
-                    <button
-                      onClick={() => setSelectedProject(project)}
-                      className="mt-auto text-blue-600 font-semibold hover:text-blue-800 transition inline-flex items-center gap-1"
-                    >
-                      Baca Selengkapnya
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="text-center mt-12">
+            <h1 className="text-6xl md:text-fluid-9xl font-black text-white tracking-tight mb-10 leading-[0.8] uppercase flex flex-col">
+              <span>PENJELAJAH</span>
+              <span className="text-seafoam text-glow">SAMUDERA.</span>
+            </h1>
+            <p className="text-white/60 text-lg md:text-2xl max-w-3xl mx-auto mb-16 font-bold leading-relaxed tracking-tight">
+              Membangun masa depan industri kelautan melalui integrasi teknologi cerdas dan komitmen pelestarian ekosistem.
+            </p>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8">
               <Link
                 href="/portfolio"
-                className="inline-block bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition transform hover:scale-105 shadow-md"
+                className="px-12 py-6 bg-brass text-navy rounded-full font-black text-xs uppercase tracking-widest hover:bg-white hover:scale-110 transition-all duration-700 shadow-[0_0_40px_rgba(197,160,89,0.4)]"
               >
-                Lihat Semua Proyek →
+                Misi Kami
+              </Link>
+              <Link
+                href="/contact"
+                className="px-12 py-6 bg-transparent border-2 border-white text-white rounded-full font-black text-xs uppercase tracking-widest hover:bg-white hover:text-navy transition-all duration-700 backdrop-blur-md"
+              >
+                Kontak Hub
               </Link>
             </div>
+          </RevealSection>
+        </div>
+      </section>
+
+      {/* STRATEGIC VISION (ABOUT) */}
+      <section className="py-40 bg-[#001F3F] relative px-6 abyss-gradient">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-32 items-center">
+          <RevealSection className="relative">
+            <div className="porthole w-full max-w-[500px] mx-auto group">
+              <img src="https://images.unsplash.com/photo-1582967788606-a171c1080cb0?q=80&w=2000&auto=format" alt="Ship Bridge" className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-125" />
+              <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-1000" />
+            </div>
+            {/* Compass Accent */}
+            <div className="absolute -bottom-10 -right-10 w-40 h-40 border-4 border-brass/20 rounded-full flex items-center justify-center pointer-events-none opacity-30 animate-spin-slow">
+              <div className="w-px h-full bg-brass/30 rotate-45"></div>
+              <div className="w-px h-full bg-brass/30 -rotate-45"></div>
+            </div>
+          </RevealSection>
+          
+          <div>
+            <span className="text-brass font-black tracking-[0.3em] uppercase text-[10px] mb-6 block">Legacy & Future</span>
+            <h2 className="text-5xl md:text-fluid-7xl font-black text-white tracking-tighter mb-10 leading-none uppercase">
+                INTEGRITAS <br/><span className="text-seafoam">DI LAUTAN.</span>
+            </h2>
+            <p className="text-white/50 text-xl leading-relaxed mb-12 font-medium">
+              Bahari Group mendefinisikan ulang standar operasional perikanan nasional. Dengan dukungan teknologi navigasi canggih, kami memastikan setiap langkah operasional berdampak positif pada keberlanjutan sumber daya laut.
+            </p>
+            <Link href="/about" className="inline-flex items-center gap-4 text-brass font-black tracking-[0.2em] uppercase text-xs group">
+              Pelajari Peta Jalan <span className="w-12 h-px bg-brass group-hover:w-20 transition-all duration-700"></span>
+            </Link>
           </div>
-        </section>
-      </RevealSection>
+        </div>
+      </section>
+
+      {/* PRODUCT CATALOG (PORTHOLE CARDS) */}
+      <section className="py-40 bg-navy relative">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-32">
+            <span className="text-seafoam font-black tracking-[0.4em] uppercase text-[10px] mb-8 block">Inventory</span>
+            <h2 className="text-6xl md:text-fluid-8xl font-black text-white tracking-tight leading-none uppercase">KATALOG <br/><span className="text-white/10">PRODUK.</span></h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-16">
+            {services.map((service: any, index: number) => (
+              <RevealSection key={service.id} delay={index * 150}>
+                <div className="group relative">
+                  {/* Hull Shape Background Decor */}
+                  <div className="absolute inset-0 bg-white shadow-2xl opacity-0 group-hover:opacity-100 hull-shape scale-90 group-hover:scale-100 transition-all duration-700" />
+                  
+                  <div className="relative z-10 p-12 transition-all duration-700 group-hover:-translate-y-4">
+                    <div className="porthole w-32 h-32 mb-10 mx-auto transition-transform duration-700 group-hover:rotate-12">
+                      <img src={service.image || "https://images.unsplash.com/photo-1551244072-5d1289347791?w=500"} alt="Service" className="w-full h-full object-cover" />
+                    </div>
+                    <h3 className="text-2xl font-black text-white group-hover:text-navy text-center uppercase tracking-tighter mb-6 transition-colors duration-500">
+                      {service.title}
+                    </h3>
+                    <p className="text-white/40 group-hover:text-navy/60 text-center font-bold text-sm leading-loose transition-colors duration-500">
+                      {service.description}
+                    </p>
+                  </div>
+                </div>
+              </RevealSection>
+            ))}
+          </div>
+          
+          <div className="text-center mt-32">
+            <Link href="/services" className="px-16 py-6 bg-white/5 border border-white/10 text-white font-black text-xs uppercase tracking-[0.3em] rounded-full hover:bg-brass hover:text-navy transition-all duration-700">
+                Lihat Selengkapnya
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* STRATEGIC PORTFOLIO (HULL CARDS) */}
+      <section className="py-40 bg-navy relative pt-0 abyss-gradient">
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex items-center gap-10 mb-24">
+            <div className="h-px bg-white/10 flex-grow" />
+            <div className="text-center">
+                <span className="mt-12 text-brass font-black tracking-[0.4em] uppercase text-[10px] mb-4 block">Operations</span>
+                <h2 className="text-5xl md:text-fluid-7xl font-black text-white tracking-tighter uppercase leading-none">PROYEK <br/>STRATEGIS</h2>
+            </div>
+            <div className="h-px bg-white/10 flex-grow" />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-16">
+            {portfolios.slice(0, 4).map((project: any, index: number) => (
+              <RevealSection key={project.id} delay={index % 2 * 200}>
+                <div 
+                  className="group relative hull-shape aspect-[16/10] overflow-hidden cursor-pointer shadow-2xl bg-black"
+                  onClick={() => setSelectedProject(project)}
+                >
+                  <img 
+                    src={project.image || "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=900"} 
+                    alt={project.title} 
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-[2000ms] group-hover:scale-110" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-transparent to-transparent p-12 flex flex-col justify-end">
+                    <span className="text-seafoam text-[10px] font-black uppercase tracking-[0.4em] mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">Case #00{index+1}</span>
+                    <h3 className="text-3xl font-black text-white mb-2 leading-none tracking-tight uppercase">{project.title}</h3>
+                    <div className="overflow-hidden h-0 group-hover:h-12 transition-all duration-700 ease-in-out">
+                      <p className="text-white/50 font-bold text-sm tracking-tight">{project.description}</p>
+                    </div>
+                  </div>
+                </div>
+              </RevealSection>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* IMMERSIVE CTA */}
+      <section className="py-40 bg-navy relative">
+        <div className="max-w-7xl mx-auto px-6">
+          <RevealSection>
+            <div className="bg-white/5 rounded-[4rem] border border-white/5 p-20 md:p-32 text-center overflow-hidden relative shadow-inner backdrop-blur-sm">
+              <div className="relative z-10">
+                <h2 className="text-5xl md:text-fluid-9xl font-black text-white tracking-widest uppercase mb-12 leading-none whitespace-pre-line">BERKOMUNIKASI <br/>DENGAN KAMI.</h2>
+                <Link href="/contact" className="inline-block px-20 py-8 bg-brass text-navy rounded-full font-black text-[10px] uppercase tracking-[0.4em] hover:bg-white transition-all duration-700 hover:scale-110 shadow-2xl">
+                  Hubungi Sekarang ⚓
+                </Link>
+              </div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-white/5 rounded-full blur-[100px] pointer-events-none group-hover:bg-white/10 transition-colors" />
+            </div>
+          </RevealSection>
+        </div>
+      </section>
 
       {/* Modal */}
-      <Modal
+      <NauticalModal
         isOpen={!!selectedProject}
         onClose={() => setSelectedProject(null)}
         title={selectedProject?.title}
@@ -263,61 +206,24 @@ export default function HomeClient({ services, portfolios, allPages, aboutFisher
         image={selectedProject?.image}
       />
 
-      {/* Informasi & Artikel - dengan max-w-6xl */}
-      {allPages.length > 0 && (
-        <RevealSection>
-          <section className="w-full py-20 bg-gray-50">
-            <div className="max-w-6xl mx-auto px-6">
-              <div className="text-center mb-16">
-                <span className="text-blue-600 font-semibold tracking-wide uppercase text-sm">Blog & Berita</span>
-                <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mt-2">Informasi & Artikel</h2>
-                <div className="w-20 h-1 bg-blue-500 mx-auto mt-4 rounded-full"></div>
-                <p className="text-gray-500 mt-4">Wawasan terkini seputar perikanan dan kelautan</p>
-              </div>
-              <div className="space-y-20">
-                {allPages.map((page: any) => (
-                  <article key={page.id} className="border-b border-gray-200 pb-12 last:border-0">
-                    <h3 className="text-3xl font-bold text-blue-900 mb-6 text-center">{page.title}</h3>
-                    {page.featured_image && (
-                      <div className="rounded-2xl overflow-hidden mb-8 shadow-md">
-                        <img
-                          src={page.featured_image}
-                          alt={page.title}
-                          className="w-full h-80 object-cover transition duration-500 hover:scale-105"
-                        />
-                      </div>
-                    )}
-                    <div
-                      className="prose prose-lg max-w-none text-gray-600 text-justify leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: page.content }}
-                    />
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
-        </RevealSection>
-      )}
-
       <style jsx global>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
+        .animate-spin-slow {
+          animation: spin-slow 20s linear infinite;
         }
-        .line-clamp-3 {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+        @keyframes bobbing {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-20px); }
+        }
+        .bobbing {
+           animation: bobbing 4s ease-in-out infinite;
+        }
+        .bobbing-delayed {
+           animation: bobbing 4s ease-in-out infinite;
+           animation-delay: 2s;
         }
       `}</style>
     </main>

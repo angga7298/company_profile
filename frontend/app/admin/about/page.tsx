@@ -1,321 +1,229 @@
-// app/admin/about/page.tsx
-"use client";
+'use client';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { getAboutData, updateAboutData, AboutData, stringifyValues } from '@/lib/aboutService';
 
-import { useState, useEffect } from "react";
-import { 
-  getAboutData, 
-  updateAboutData, 
-  parseValues, 
-  stringifyValues,
-  formatMission,
-  formatMissionString,
-  AboutData, 
-  AboutValue 
-} from "@/lib/aboutService";
-
-export default function AdminAboutPage() {
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState<Partial<AboutData>>({});
-  const [activeTab, setActiveTab] = useState("hero");
-  const [missionList, setMissionList] = useState<string[]>([
-    "Menyajikan menu dengan waktu tunggu maksimal 15 menit tanpa mengurangi kualitas.",
-    "Bermitra dengan petani lokal untuk bahan baku segar setiap hari.",
-    "Mengembangkan menu inovatif yang menggabungkan cita rasa internasional dengan sentuhan lokal.",
-    "Menciptakan pengalaman pelanggan yang ramah, cepat, dan berkesan melalui teknologi digital."
-  ]);
+export default function EditAbout() {
+  const router = useRouter();
+  const [description, setDescription] = useState('');
+  const [vision, setVision] = useState('');
+  const [mission, setMission] = useState('');
+  const [heroTitle, setHeroTitle] = useState('');
+  const [heroSubtitle, setHeroSubtitle] = useState('');
+  
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    setLoading(true);
-    const data = await getAboutData();
-    if (data) {
-      setFormData(data);
-      
-      let parsedMission = formatMission(data.mission);
-      if (parsedMission.length === 0 || (parsedMission.length === 1 && parsedMission[0] === "")) {
-        parsedMission = [
-          "Menyajikan menu dengan waktu tunggu maksimal 15 menit tanpa mengurangi kualitas.",
-          "Bermitra dengan petani lokal untuk bahan baku segar setiap hari.",
-          "Mengembangkan menu inovatif yang menggabungkan cita rasa internasional dengan sentuhan lokal.",
-          "Menciptakan pengalaman pelanggan yang ramah, cepat, dan berkesan melalui teknologi digital."
-        ];
-      }
-      setMissionList(parsedMission);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push('/admin/login');
+      return;
     }
-    setLoading(false);
-  };
+
+    const fetchAbout = async () => {
+      try {
+        const data = await getAboutData();
+        if (data) {
+          setDescription(data.description || '');
+          setVision(data.vision || '');
+          setMission(data.mission || '');
+          setHeroTitle(data.hero_title || '');
+          setHeroSubtitle(data.hero_subtitle || '');
+        }
+      } catch (err) {
+        setError('Gagal memuat profil perusahaan.');
+      } finally {
+        setFetching(false);
+      }
+    };
+    fetchAbout();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
-    
-    const updateData = {
-      ...formData,
-      values: "[]", // Kosongkan nilai perusahaan
-      mission: formatMissionString(missionList)
-    };
-    
-    const result = await updateAboutData(updateData);
-    if (result) {
-      alert("✓ Data berhasil disimpan!");
-      fetchData();
-    } else {
-      alert("✗ Gagal menyimpan data!");
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const dataToSave: Partial<AboutData> = {
+        description,
+        vision,
+        mission,
+        hero_title: heroTitle,
+        hero_subtitle: heroSubtitle,
+        values: stringifyValues([
+            { title: "Efisiensi Operasional", description: "Optimalisasi rantai pasok kelautan yang presisi.", icon: "" },
+            { title: "Kualitas Standar Ekspor", description: "Hanya produk terbaik yang lolos seleksi kualitas.", icon: "" },
+            { title: "Keberlanjutan Ekosistem", description: "Menjaga keseimbangan laut untuk masa depan.", icon: "" }
+        ])
+      };
+      
+      const updated = await updateAboutData(dataToSave);
+      
+      if (!updated) {
+        throw new Error('Gagal memperbarui database.');
+      }
+
+      setSuccess('Profil perusahaan berhasil diperbarui!');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-    setSaving(false);
   };
 
-  const handleMissionChange = (index: number, value: string) => {
-    const newMissionList = [...missionList];
-    newMissionList[index] = value;
-    setMissionList(newMissionList);
+  const handleReset = async () => {
+    if (!confirm('PERINGATAN KRITIKAL: Seluruh konten profil akan dihapus dari manifest. Lanjutkan?')) return;
+    
+    setLoading(true);
+    try {
+      const resetData: Partial<AboutData> = {
+        description: '',
+        vision: '',
+        mission: '',
+        hero_title: '',
+        hero_subtitle: '',
+        values: '[]'
+      };
+      await updateAboutData(resetData);
+      
+      setDescription('');
+      setVision('');
+      setMission('');
+      setHeroTitle('');
+      setHeroSubtitle('');
+      
+      setSuccess('Konten profil telah dikosongkan.');
+    } catch (err) {
+      setError('Terjadi kesalahan saat mengosongkan data.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const addMission = () => {
-    setMissionList([...missionList, ""]);
-  };
-
-  const removeMission = (index: number) => {
-    const newMissionList = missionList.filter((_, i) => i !== index);
-    setMissionList(newMissionList);
-  };
-
-  const tabs = [
-    { id: "hero", label: "Hero Section", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
-    { id: "description", label: "Deskripsi", icon: "M4 6h16M4 12h16M4 18h7" },
-    { id: "visi", label: "Visi & Misi", icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
-  ];
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
-      </div>
-    );
-  }
+  if (fetching) return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <div className="w-10 h-10 border-4 border-white/5 border-t-brass rounded-full animate-spin"></div>
+    </div>
+  );
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">Halaman Tentang Perusahaan</h1>
-        <p className="text-gray-500 text-sm mt-1">Kelola konten halaman tentang perusahaan Anda</p>
-      </div>
+    <div className="animate-fade-in-up">
+      <header className="mb-20">
+        <span className="text-brass font-black tracking-[0.4em] uppercase text-[10px] mb-4 block">Manifest Settings</span>
+        <h1 className="text-5xl font-black text-white tracking-tighter uppercase leading-none">Profil <br/>Perusahaan.</h1>
+        <p className="text-white/30 text-[10px] mt-4 uppercase tracking-[0.2em] font-black italic">Mendefinisikan Ulang Narasi Bahari</p>
+      </header>
+      
+      {error && (
+        <div className="bg-red-500/10 text-red-500 p-8 rounded-[3rem] mb-12 border border-red-500/20 flex items-center gap-6">
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg>
+          <span className="font-black text-[10px] uppercase tracking-[0.2em]">{error}</span>
+        </div>
+      )}
+      {success && (
+        <div className="bg-seafoam/10 text-seafoam p-8 rounded-[3rem] mb-12 border border-seafoam/20 flex items-center gap-6">
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span className="font-black text-[10px] uppercase tracking-[0.2em] text-glow">{success}</span>
+        </div>
+      )}
 
-      {/* Tab Navigation */}
-      <div className="flex flex-wrap gap-2 mb-6 border-b border-gray-200">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-t-lg transition-all duration-200 ${
-              activeTab === tab.id
-                ? "bg-white text-red-600 border-b-2 border-red-600"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={tab.icon} />
-            </svg>
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      <form onSubmit={handleSubmit}>
-        {/* Hero Section Tab */}
-        {activeTab === "hero" && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
-                </div>
-                <h2 className="text-lg font-semibold text-gray-800">Hero Section</h2>
-              </div>
-            </div>
-            <div className="p-6 space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Hero Title</label>
-                <input
-                  type="text"
-                  value={formData.hero_title || ""}
-                  onChange={(e) => setFormData({ ...formData, hero_title: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition outline-none"
-                  placeholder="Contoh: Tentang PerusahaanKita"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Hero Subtitle</label>
-                <textarea
-                  value={formData.hero_subtitle || ""}
-                  onChange={(e) => setFormData({ ...formData, hero_subtitle: e.target.value })}
-                  rows={3}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition outline-none resize-none"
-                  placeholder="Deskripsi singkat tentang perusahaan..."
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Hero Image URL</label>
-                <input
-                  type="text"
-                  value={formData.hero_image || ""}
-                  onChange={(e) => setFormData({ ...formData, hero_image: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition outline-none"
-                  placeholder="https://images.unsplash.com/..."
-                />
-                <p className="text-xs text-gray-400 mt-1">Gunakan URL gambar dari Unsplash atau hosting gambar lainnya</p>
-              </div>
-            </div>
+      <form onSubmit={handleSubmit} className="space-y-24">
+        {/* HERO CONTENT SECTION */}
+        <section className="space-y-12">
+          <div className="flex items-center gap-6">
+            <span className="text-[10px] font-black text-white/10 uppercase tracking-[0.5em] whitespace-nowrap">Header Deck Configuration</span>
+            <div className="h-px bg-white/5 flex-grow"></div>
           </div>
-        )}
-
-        {/* Deskripsi Tab */}
-        {activeTab === "description" && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-                  </svg>
-                </div>
-                <h2 className="text-lg font-semibold text-gray-800">Deskripsi Perusahaan</h2>
-              </div>
-            </div>
-            <div className="p-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Konten Deskripsi</label>
-              <textarea
-                value={formData.description || ""}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={12}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition outline-none font-mono text-sm"
-                placeholder="Tulis deskripsi lengkap perusahaan di sini...&#10;&#10;Gunakan enter untuk membuat paragraf baru."
+          
+          <div className="grid md:grid-cols-2 gap-10">
+            <div className="space-y-4">
+              <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 pl-8">Hero Title</label>
+              <input
+                type="text"
+                value={heroTitle}
+                onChange={(e) => setHeroTitle(e.target.value)}
+                placeholder="Ex: Solusi Maritim Terpadu"
+                className="w-full bg-[#001f3f] border-2 border-white/5 rounded-[2rem] px-10 py-7 text-sm font-bold text-white focus:border-brass/30 transition-all outline-none shadow-2xl"
               />
-              <p className="text-xs text-gray-400 mt-2">
-                Tip: Gunakan baris kosong untuk memisahkan paragraf.
-              </p>
+            </div>
+            <div className="space-y-4">
+              <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 pl-8">Hero Subtitle</label>
+              <input
+                type="text"
+                value={heroSubtitle}
+                onChange={(e) => setHeroSubtitle(e.target.value)}
+                placeholder="Ex: Menuju ekosistem laut yang berkelanjutan."
+                className="w-full bg-[#001f3f] border-2 border-white/5 rounded-[2rem] px-10 py-7 text-sm font-bold text-white focus:border-brass/30 transition-all outline-none shadow-2xl"
+              />
             </div>
           </div>
-        )}
+        </section>
 
-        {/* Visi & Misi Tab */}
-        {activeTab === "visi" && (
-          <div className="space-y-6">
-            {/* Visi */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  </div>
-                  <h2 className="text-lg font-semibold text-gray-800">Visi Perusahaan</h2>
-                </div>
-              </div>
-              <div className="p-6">
+        {/* CORE BRAND CONTENT SECTION */}
+        <section className="space-y-12">
+          <div className="flex items-center gap-6">
+            <span className="text-[10px] font-black text-white/10 uppercase tracking-[0.5em] whitespace-nowrap">Core Logbook Entry</span>
+            <div className="h-px bg-white/5 flex-grow"></div>
+          </div>
+
+          <div className="space-y-12">
+            <div className="space-y-4">
+              <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 pl-8">Corporate Description</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={8}
+                className="w-full bg-[#001f3f] border-2 border-white/5 rounded-[3.5rem] px-12 py-10 text-sm font-medium leading-loose text-white/60 focus:border-seafoam/30 transition-all outline-none shadow-2xl"
+              />
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-10">
+              <div className="space-y-4">
+                <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 pl-8">Vision Parameters</label>
                 <textarea
-                  value={formData.vision || ""}
-                  onChange={(e) => setFormData({ ...formData, vision: e.target.value })}
-                  rows={5}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition outline-none"
-                  placeholder="Tulis visi perusahaan di sini..."
+                  value={vision}
+                  onChange={(e) => setVision(e.target.value)}
+                  rows={6}
+                  className="w-full bg-[#001f3f] border-2 border-white/5 rounded-[3rem] px-12 py-10 text-sm font-medium leading-loose text-white/60 focus:border-seafoam/30 transition-all outline-none shadow-2xl"
+                />
+              </div>
+              <div className="space-y-4">
+                <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 pl-8">Mission Protocol Points</label>
+                <textarea
+                  value={mission}
+                  onChange={(e) => setMission(e.target.value)}
+                  rows={6}
+                  className="w-full bg-[#001f3f] border-2 border-white/5 rounded-[3rem] px-12 py-10 text-sm font-medium leading-loose text-white/60 focus:border-seafoam/30 transition-all outline-none shadow-2xl"
+                  placeholder="Format:&#10;Point One&#10;Point Two"
                 />
               </div>
             </div>
-
-            {/* Misi */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-red-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h2 className="text-lg font-semibold text-gray-800">Misi Perusahaan</h2>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="space-y-3">
-                  {missionList.map((mission, index) => (
-                    <div key={index} className="flex gap-2">
-                      <div className="flex-shrink-0 w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-sm font-semibold text-red-600">
-                        {index + 1}
-                      </div>
-                      <input
-                        type="text"
-                        value={mission}
-                        onChange={(e) => handleMissionChange(index, e.target.value)}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition outline-none"
-                        placeholder={`Misi ${index + 1}`}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeMission(index)}
-                        className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
-                  ))}
-                  
-                  <button
-                    type="button"
-                    onClick={addMission}
-                    className="mt-3 flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition text-sm font-medium"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                    Tambah Misi
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
-        )}
+        </section>
 
-        {/* Submit Button - Sticky Bottom */}
-        <div className="sticky bottom-6 mt-8">
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-4 flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={() => fetchData()}
-              className="px-5 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition"
-            >
-              Reset
-            </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-6 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
-            >
-              {saving ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Menyimpan...
-                </span>
-              ) : (
-                "Simpan Perubahan"
-              )}
-            </button>
-          </div>
+        {/* ACTIONS SECTION */}
+        <div className="flex flex-col md:flex-row gap-8 pt-20 border-t border-white/5">
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-20 py-7 bg-brass text-navy text-[10px] font-black uppercase tracking-[0.5em] rounded-full hover:bg-white transition-all duration-700 shadow-[0_0_50px_rgba(197,160,89,0.2)] disabled:bg-white/5"
+          >
+            {loading ? 'Transmitting...' : 'Update Records ⚓'}
+          </button>
+          
+          <button
+            type="button"
+            onClick={handleReset}
+            disabled={loading}
+            className="px-20 py-7 bg-red-500/10 text-red-500 font-black text-[10px] uppercase tracking-[0.5em] rounded-full hover:bg-red-500 hover:text-white transition-all duration-500"
+          >
+            Terminal Wipe
+          </button>
         </div>
       </form>
     </div>

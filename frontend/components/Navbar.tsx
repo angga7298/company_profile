@@ -7,21 +7,26 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Fungsi untuk mengecek token
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const checkToken = () => {
     const token = localStorage.getItem('token');
     setIsLoggedIn(!!token);
   };
 
   useEffect(() => {
-    // Cek token saat komponen mount dan setiap pathname berubah
     checkToken();
-
-    // Dengarkan perubahan storage (misal dari tab lain, atau dari halaman login)
     window.addEventListener('storage', checkToken);
     return () => window.removeEventListener('storage', checkToken);
-  }, [pathname]); // <<< penting: jalankan ulang saat pindah halaman
+  }, [pathname]);
 
   const handleLogout = async () => {
     const token = localStorage.getItem('token');
@@ -38,107 +43,63 @@ export default function Navbar() {
   };
 
   const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/about', label: 'About' },
-    { href: '/services', label: 'Services' },
-    { href: '/portfolio', label: 'Portfolio' },
-    { href: '/contact', label: 'Contact' },
+    { href: '/', label: 'Beranda' },
+    { href: '/about', label: 'Tentang' },
+    { href: '/services', label: 'Produk' },
+    { href: '/portfolio', label: 'Portofolio' },
+    { href: '/contact', label: 'Kontak' },
   ];
 
-  // Tambahkan menu Dashboard jika sudah login
-  if (isLoggedIn) {
-    navItems.push({ href: '/admin/dashboard', label: 'Dashboard' });
-  }
-
   return (
-    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link href="/" className="text-xl md:text-2xl font-bold text-blue-700 tracking-tight">
-            PT. KECAP BAHARI
-          </Link>
-
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${scrolled ? 'sea-glass py-4 shadow-2xl' : 'bg-transparent py-8'}`}>
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center h-12">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-12 h-12 bg-brass rounded-full flex items-center justify-center text-navy font-black shadow-[0_0_20px_rgba(197,160,89,0.5)] group-hover:rotate-[360deg] transition-transform duration-1000 border-2 border-white/20">
+            ⚓
+          </div>
+          <div className="flex flex-col">
+            <span className="text-xl font-black tracking-tighter text-white leading-none">BAHARI</span>
+            <span className="text-[10px] font-bold tracking-[0.3em] text-seafoam leading-none mt-1">EST. 2024</span>
+          </div>
+        </Link>
+        
+        <div className="hidden md:flex items-center gap-10">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-gray-700 font-medium transition-colors duration-200 hover:text-blue-600 ${
-                  pathname === item.href
-                    ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
-                    : ''
-                }`}
+                className={`text-sm font-bold tracking-widest uppercase transition-all duration-300 nav-link-nautical flex items-center gap-2 ${isActive ? 'text-seafoam text-glow' : 'text-white/70 hover:text-white'}`}
               >
+                {isActive && <span className="text-brass">⚓</span>}
                 {item.label}
               </Link>
-            ))}
-          </div>
+            );
+          })}
+        </div>
 
-          {/* Login/Logout Icon */}
-          <div className="flex items-center">
-            {isLoggedIn ? (
-              <button
-                onClick={handleLogout}
-                className="flex items-center justify-center w-9 h-9 rounded-full bg-red-100 text-red-600 hover:bg-red-500 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-300"
-                title="Logout"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
-                  />
-                </svg>
-              </button>
-            ) : (
-              <Link
-                href="/admin/login"
-                className="flex items-center justify-center w-9 h-9 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-500 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                title="Login Admin"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25"
-                  />
-                </svg>
+        <div className="flex items-center gap-4">
+          {isLoggedIn ? (
+            <>
+              <Link href="/admin/dashboard" className="text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-full border border-brass text-brass hover:bg-brass hover:text-navy transition-all duration-500 shadow-lg">
+                Dashboard
               </Link>
-            )}
-          </div>
-
-          <div className="md:hidden flex items-center">
-            <button className="text-gray-600 hover:text-blue-600 focus:outline-none">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
+              <button 
+                onClick={handleLogout}
+                className="text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all duration-500"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
-              </svg>
-            </button>
-          </div>
+                Keluar
+              </button>
+            </>
+          ) : (
+            <Link 
+              href="/admin/login" 
+              className="text-[10px] font-black uppercase tracking-widest px-8 py-3 rounded-full bg-brass text-navy hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all duration-500 shadow-[0_0_20px_rgba(197,160,89,0.3)]"
+            >
+              Portal Admin
+            </Link>
+          )}
         </div>
       </div>
     </nav>

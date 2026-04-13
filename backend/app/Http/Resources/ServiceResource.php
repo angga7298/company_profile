@@ -14,6 +14,7 @@ class ServiceResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'icon' => $this->icon,
+            'image' => $this->image ? url('storage/' . $this->image) : null,
         ];
     }
 }

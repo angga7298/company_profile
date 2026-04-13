@@ -22,7 +22,7 @@ export default function AdminLogin() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Login gagal');
+      if (!res.ok) throw new Error(data.message || 'Otoritas Gagal');
       localStorage.setItem('token', data.token);
       document.cookie = `token=${data.token}; path=/`;
       window.dispatchEvent(new Event('storage'));
@@ -35,55 +35,49 @@ export default function AdminLogin() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Alert Peringatan */}
-        <div className="mb-6 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
+    <main className="min-h-screen bg-navy flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Decor - Radar Pulse */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
+         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border-2 border-seafoam/20 rounded-full animate-ping"></div>
+         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-seafoam/10 rounded-full"></div>
+      </div>
+
+      <div className="w-full max-w-lg relative z-10">
+        <div className="mb-10 text-center">
+            <div className="w-20 h-20 bg-brass rounded-full flex items-center justify-center text-navy font-black text-3xl mx-auto mb-8 shadow-[0_0_40px_rgba(197,160,89,0.5)] border-4 border-white/10">
+                ⚓
             </div>
-            <div className="ml-3">
-              <p className="text-sm text-yellow-700">
-                <span className="font-medium">Perhatian!</span> Form ini hanya untuk admin yang memiliki kewenangan. Akses terbatas.
-              </p>
-            </div>
-          </div>
+            <h1 className="text-4xl font-black text-white tracking-tighter uppercase leading-none mb-2">Login <br/> <span className="text-seafoam">Administrator.</span></h1>
+            <p className="text-white/30 text-[10px] uppercase tracking-[0.4em] font-black">Akses Terbatas Petugas</p>
         </div>
 
         {/* Card Login */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-          <div className="h-2 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-          <div className="p-8">
-            <div className="text-center mb-6">
-              <h1 className="text-3xl font-extrabold text-blue-900">Admin Login</h1>
-              <p className="text-gray-500 text-sm mt-1">Masukkan kredensial Anda</p>
-            </div>
+        <div className="sea-glass rounded-[4rem] overflow-hidden border border-white/5 shadow-2xl">
+          <div className="p-16">
             {error && (
-              <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm">
-                {error}
+              <div className="mb-10 bg-red-500/10 border border-red-500/20 text-red-500 px-8 py-5 rounded-3xl text-xs font-black uppercase tracking-widest text-center">
+                 Galat: {error}
               </div>
             )}
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            
+            <form onSubmit={handleSubmit} className="space-y-10">
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 pl-6 underline decoration-white/5">Alamat Email</label>
                 <input
                   type="email"
-                  placeholder="admin@example.com"
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  placeholder="admin@email.com"
+                  className="w-full bg-navy/50 border-none rounded-3xl p-6 text-sm font-bold text-white focus:ring-4 focus:ring-brass/20 transition-all outline-none shadow-inner"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 pl-6 underline decoration-white/5">Kata Sandi (Password)</label>
                 <input
                   type="password"
                   placeholder="••••••••"
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                  className="w-full bg-navy/50 border-none rounded-3xl p-6 text-sm font-bold text-white focus:ring-4 focus:ring-brass/20 transition-all outline-none shadow-inner"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   required
@@ -92,15 +86,22 @@ export default function AdminLogin() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition transform hover:scale-[1.01] disabled:bg-gray-400 disabled:hover:scale-100"
+                className="w-full bg-brass text-navy font-black py-6 rounded-full transition-all duration-700 hover:bg-white hover:scale-110 shadow-[0_0_30px_rgba(197,160,89,0.3)] uppercase text-[10px] tracking-[0.4em] disabled:bg-white/10"
               >
-                {loading ? 'Memproses...' : 'Login'}
+                {loading ? 'Memverifikasi...' : 'Masuk ke Dashboard ⚓'}
               </button>
             </form>
-            <div className="mt-6 text-center text-xs text-gray-400">
-              <Link href="/" className="hover:text-blue-600">← Kembali ke Beranda</Link>
+            <div className="mt-12 text-center">
+              <Link href="/" className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 hover:text-white transition-all group">
+                <span className="inline-block transition-transform group-hover:-translate-x-3 mr-2">←</span> Kembali ke Beranda
+              </Link>
             </div>
           </div>
+        </div>
+        
+        {/* Footer Coordinate */}
+        <div className="mt-12 text-center text-[9px] font-bold text-white/10 tracking-[0.8em] uppercase">
+             ID-JKT // 001.002.003
         </div>
       </div>
     </main>

@@ -8,6 +8,7 @@ use App\Http\Controllers\API\PageController;
 use App\Http\Controllers\API\PortfolioController;
 use App\Http\Controllers\API\ServiceController;
 use App\Http\Controllers\API\ContactController;
+use App\Http\Controllers\API\AboutController;
 
 // ========== LOGIN ENDPOINT (MANUAL) ==========
 Route::post('/login', function (Request $request) {
@@ -45,6 +46,7 @@ Route::get('/portfolios/{id}', [PortfolioController::class, 'show']);
 Route::get('/services', [ServiceController::class, 'index']);
 Route::get('/services/{service}', [ServiceController::class, 'show']);
 Route::post('/contact', [ContactController::class, 'store']);
+Route::get('/about', [AboutController::class, 'index']);
 
 // ========== PROTECTED ADMIN ENDPOINTS ==========
 Route::middleware('auth:sanctum')->group(function () {
@@ -53,4 +55,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('admin/services', ServiceController::class)->except(['index', 'show']);
     Route::get('/admin/contacts', [ContactController::class, 'index']);
     Route::put('/admin/contacts/{id}/read', [ContactController::class, 'markAsRead']);
+    Route::post('/about/update', [AboutController::class, 'update']);
 });

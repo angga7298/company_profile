@@ -49,6 +49,7 @@ export async function updateAboutData(data: Partial<AboutData>): Promise<AboutDa
 }
 
 export function parseValues(valuesJson: string): AboutValue[] {
+  if (!valuesJson) return [];
   try {
     return JSON.parse(valuesJson);
   } catch {
@@ -61,6 +62,7 @@ export function stringifyValues(values: AboutValue[]): string {
 }
 
 export function formatMission(mission: string): string[] {
+  if (!mission) return [];
   return mission.split('\n').filter(line => line.trim());
 }
 

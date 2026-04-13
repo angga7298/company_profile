@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import LayoutWrapper from "@/components/LayoutWrapper";
 
-const inter = Inter({ subsets: ["latin"] });
+const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Company Profile",
-  description: "Professional company profile website",
+  title: "Bahari Group | Inovasi Kelautan & Perikanan Terpadu",
+  description: "Bahari Group menyediakan solusi terpadu untuk eksosistem kelautan dan perikanan yang produktif dan lestari melalui inovasi teknologi dan pemberdayaan nelayan.",
 };
 
 export default function RootLayout({
@@ -17,11 +16,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <Navbar />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
+    <html lang="id">
+      <body className={`${outfit.className} antialiased`}>
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );

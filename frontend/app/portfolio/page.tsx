@@ -4,37 +4,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "@/lib/api";
-
-// ========== MODAL COMPONENT (sama seperti di HomeClient) ==========
-const Modal = ({ isOpen, onClose, title, description, image, date }: any) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm transition-all">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl animate-fade-in-up">
-        {image && (
-          <div className="relative h-64 w-full overflow-hidden rounded-t-2xl">
-            <img src={image} alt={title} className="w-full h-full object-cover" />
-          </div>
-        )}
-        <div className="p-6 md:p-8">
-          <h3 className="text-2xl md:text-3xl font-bold text-blue-800 mb-2">{title}</h3>
-          {date && <p className="text-sm text-gray-500 mb-4">{date}</p>}
-          <div
-            className="text-gray-600 leading-relaxed space-y-4"
-            dangerouslySetInnerHTML={{ __html: description }}
-          />
-          <button
-            onClick={onClose}
-            className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition"
-          >
-            Tutup
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import WaveDivider from "@/components/WaveDivider";
+import RevealSection from "@/components/RevealSection";
+import NauticalModal from "@/components/NauticalModal";
 
 export default function PortfolioPage() {
   const [portfolios, setPortfolios] = useState<any[]>([]);
@@ -57,148 +29,134 @@ export default function PortfolioPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-navy">
+        <div className="w-12 h-12 border-4 border-white/5 border-t-seafoam rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <main className="bg-white overflow-hidden font-sans">
-      {/* Hero Section */}
-      <section className="relative w-full bg-blue-900 py-20 md:py-28">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=900')] bg-cover bg-center opacity-20"></div>
-        <div className="relative max-w-7xl mx-auto px-6 text-center text-white">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-4">Portofolio Proyek</h1>
-          <p className="text-lg md:text-xl max-w-2xl mx-auto">
-            Berbagai inisiatif nyata yang telah kami lakukan untuk perikanan berkelanjutan dan kesejahteraan nelayan.
-          </p>
+    <main className="bg-navy overflow-hidden font-sans">
+      
+      {/* ABYSS HEADER SECTION */}
+      <section className="bg-navy pt-60 pb-32 px-6 relative overflow-hidden abyss-gradient">
+        <div className="absolute inset-0 z-0 opacity-20">
+           <img 
+            src="https://images.unsplash.com/photo-1551244072-5d1289347791?q=80&w=2000&auto=format" 
+            alt="Deep Sea" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-navy via-transparent to-navy" />
+        </div>
+
+        <div className="max-w-7xl mx-auto relative z-10 text-center">
+          <RevealSection>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-md text-brass text-[10px] font-black tracking-[0.4em] uppercase mb-10 border border-white/10">
+              Case Book #2024
+            </span>
+            <h1 className="text-6xl md:text-fluid-9xl font-black text-white tracking-tighter leading-[0.8] mb-12 uppercase">
+              REKAM <br/> <span className="text-white/20">JEJAK.</span>
+            </h1>
+            <p className="text-white/50 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed font-bold tracking-tight">
+              Manifestasi nyata integrasi teknologi bahari dalam berbagai proyek strategis di seluruh penjuru kepulauan.
+            </p>
+          </RevealSection>
+        </div>
+        
+        <div className="absolute bottom-[-2px] left-0 right-0 z-20">
+          <WaveDivider color="#001F3F" />
         </div>
       </section>
 
-      {/* Daftar Portofolio dengan Modal */}
-      <section className="w-full py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {portfolios.map((project: any) => (
-              <div
-                key={project.id}
-                className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:-translate-y-2 flex flex-col"
-              >
-                {project.image && (
-                  <div className="overflow-hidden h-56">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                )}
-                <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-bold text-blue-800 mb-2">{project.title}</h3>
-                  <p className="text-gray-500 line-clamp-3 mb-2">{project.description}</p>
-                  {project.project_date && (
-                    <p className="text-sm text-gray-400 mb-4">
-                      {new Date(project.project_date).toLocaleDateString("id-ID")}
-                    </p>
-                  )}
-                  <button
+      {/* PORTFOLIO GRID (HULL CARDS) */}
+      <section className="py-40 px-6 bg-[#001F3F] relative">
+        <div className="max-w-7xl mx-auto">
+          {portfolios.length === 0 ? (
+            <div className="text-center py-40 border-4 border-dashed border-white/5 rounded-[4rem]">
+              <p className="text-white/20 font-black tracking-[0.4em] text-xs uppercase">No Strategic Data In This Coordinate</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-24">
+              {portfolios.map((project: any, index: number) => (
+                <RevealSection key={project.id} delay={index * 150}>
+                  <div
+                    className="group relative hull-shape aspect-[4/3] cursor-pointer shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden bg-navy"
                     onClick={() => setSelectedProject(project)}
-                    className="mt-auto text-blue-600 font-semibold hover:text-blue-800 transition inline-flex items-center gap-1"
                   >
-                    Baca Selengkapnya
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+                    <img
+                      src={project.image || "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=900"}
+                      alt={project.title}
+                      className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-[2000ms]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/20 to-transparent p-12 flex flex-col justify-end">
+                      <div className="flex justify-between items-end">
+                        <div className="max-w-md">
+                           <span className="text-seafoam text-[10px] font-black tracking-[0.4em] uppercase mb-6 block opacity-0 group-hover:opacity-100 transition-opacity duration-700">Project Mission</span>
+                           <h3 className="text-3xl md:text-4xl font-black text-white mb-4 leading-[0.9] tracking-tighter uppercase">{project.title}</h3>
+                           <p className="text-white/40 font-bold text-sm line-clamp-2 transition-colors duration-500 group-hover:text-white/80">
+                             {project.description}
+                           </p>
+                        </div>
+                        <div className="w-16 h-16 rounded-full bg-brass flex items-center justify-center text-navy font-black text-xl translate-y-20 group-hover:translate-y-0 transition-transform duration-700 shadow-2xl">
+                           ⚓
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </RevealSection>
+              ))}
+            </div>
+          )}
+        </div>
+        
+        <div className="absolute bottom-[-2px] left-0 right-0 z-20">
+          <WaveDivider color="#001220" />
         </div>
       </section>
+
+      {/* STRATEGIC IMPACT (ABYSS STYLE) */}
+      <RevealSection>
+        <section className="py-40 px-6 bg-navy overflow-hidden relative abyss-gradient">
+          <div className="max-w-7xl mx-auto bg-white shadow-2xl rounded-[5rem] p-16 md:p-32 overflow-hidden relative group">
+            <div className="relative z-10 grid lg:grid-cols-12 gap-20 items-center">
+              <div className="lg:col-span-7">
+                <span className="text-ocean font-black tracking-[0.4em] uppercase text-[10px] mb-8 block">Operational Impact</span>
+                <h2 className="text-5xl md:text-fluid-8xl font-black text-navy tracking-tighter uppercase mb-12 leading-none">DAMPAK <br/> <span className="text-navy/10">RIIL.</span></h2>
+                <p className="text-navy/50 text-xl leading-relaxed mb-12 font-medium">
+                  Setiap inisiatif Bahari Group diukur berdasarkan parameter keberlanjutan dan efisiensi industri kelautan nasional Indonesia.
+                </p>
+              </div>
+              <div className="lg:col-span-5 grid grid-cols-2 gap-8">
+                {[
+                  { label: "Binaan", val: "50+", sub: "Kelompok Nelayan" },
+                  { label: "Wilayah", val: "15", sub: "Kabupaten Strategis" },
+                  { label: "Output", val: "25%", sub: "Peningkatan Hasil" },
+                  { label: "Partner", val: "20+", sub: "Kemitraan Global" },
+                ].map((stat) => (
+                  <div key={stat.label} className="bg-navy/5 p-10 rounded-[3rem] border border-navy/5 transition-all duration-700 group-hover:bg-navy group-hover:text-white group-hover:-translate-y-4">
+                    <div className="text-4xl font-black mb-2 tracking-tighter">{stat.val}</div>
+                    <div className="text-[10px] font-black uppercase tracking-widest opacity-40">{stat.sub}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Compass background watermark */}
+            <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] border-8 border-navy/5 rounded-full pointer-events-none group-hover:rotate-45 transition-transform duration-[3000ms]" />
+          </div>
+        </section>
+      </RevealSection>
 
       {/* Modal */}
-      <Modal
+      <NauticalModal
         isOpen={!!selectedProject}
         onClose={() => setSelectedProject(null)}
         title={selectedProject?.title}
         description={selectedProject?.description}
         image={selectedProject?.image}
-        date={selectedProject?.project_date && new Date(selectedProject.project_date).toLocaleDateString("id-ID")}
+        date={selectedProject?.project_date && new Date(selectedProject.project_date).toLocaleDateString("id-ID", { year: 'numeric', month: 'long' })}
       />
 
-      {/* Artikel Statis Penjelasan Tambahan */}
-      <section className="w-full py-20 bg-white">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span className="text-blue-600 font-semibold tracking-wide uppercase text-sm">Komitmen Kami</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-blue-900 mt-2">Dampak Nyata untuk Laut & Nelayan</h2>
-            <div className="w-20 h-1 bg-blue-500 mx-auto mt-4 rounded-full"></div>
-          </div>
-          <div className="prose prose-lg text-gray-600 mx-auto text-justify leading-relaxed space-y-6">
-            <p>
-              Setiap proyek yang kami jalankan dirancang untuk memberikan manfaat langsung bagi ekosistem laut dan peningkatan kesejahteraan nelayan. Dari teknologi ramah lingkungan hingga program pemberdayaan masyarakat pesisir, kami terus berinovasi.
-            </p>
-            <p>
-              Hingga saat ini, kami telah bermitra dengan lebih dari 50 kelompok nelayan di 15 kabupaten pesisir. Berkat kolaborasi ini, terjadi peningkatan hasil tangkapan rata-rata 25% sekaligus penurunan penggunaan alat tangkap destruktif.
-            </p>
-            <div className="grid md:grid-cols-3 gap-6 mt-8 text-center">
-              <div className="p-4 bg-blue-50 rounded-xl">
-                <div className="text-3xl font-bold text-blue-800">50+</div>
-                <div className="text-gray-600">Kelompok Nelayan</div>
-              </div>
-              <div className="p-4 bg-blue-50 rounded-xl">
-                <div className="text-3xl font-bold text-blue-800">15</div>
-                <div className="text-gray-600">Kabupaten Pesisir</div>
-              </div>
-              <div className="p-4 bg-blue-50 rounded-xl">
-                <div className="text-3xl font-bold text-blue-800">25%</div>
-                <div className="text-gray-600">Peningkatan Hasil Tangkapan</div>
-              </div>
-            </div>
-            <p>
-              Kami mengundang Anda untuk menjadi bagian dari perubahan. Mari bersama menjaga laut dan menyejahterakan nelayan Indonesia.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      {/* <section className="w-full py-20 bg-blue-600">
-        <div className="max-w-3xl mx-auto text-center px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Tertarik Berkolaborasi?</h2>
-          <p className="text-lg text-blue-100 mb-8">Hubungi kami untuk mendiskusikan proyek perikanan berkelanjutan Anda.</p>
-          <Link
-            href="/contact"
-            className="inline-block bg-white text-blue-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition transform hover:scale-105 shadow-md"
-          >
-            Hubungi Kami
-          </Link>
-        </div>
-      </section> */}
-
-      <style jsx global>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fade-in-up {
-          animation: fadeInUp 0.6s ease-out forwards;
-        }
-        .line-clamp-3 {
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-      `}</style>
     </main>
   );
 }

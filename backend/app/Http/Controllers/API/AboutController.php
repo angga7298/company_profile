@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\About;
@@ -13,10 +13,13 @@ class AboutController extends Controller
         $about = About::first();
 
         if (!$about) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data not found'
-            ], 404);
+            $about = About::create([
+                'description' => 'Default about description.',
+                'vision' => 'Default vision.',
+                'mission' => 'Default mission.',
+                'hero_title' => 'Kemajuan Perusahaan',
+                'hero_subtitle' => 'Bersama kita bisa'
+            ]);
         }
 
         return response()->json([

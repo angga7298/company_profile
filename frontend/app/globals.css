@@ -1,26 +1,149 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #001220;
+  --foreground: #e2e8f0;
+  --deep-navy: #001220;
+  --ocean-blue: #004777;
+  --sea-mid: #0077b6;
+  --seafoam: #82eefd;
+  --brass: #c5a059;
+  --sand: #f2e9e4;
+  --glass-sea: rgba(0, 71, 119, 0.4);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-navy: var(--deep-navy);
+  --color-ocean: var(--ocean-blue);
+  --color-sea-mid: var(--sea-mid);
+  --color-seafoam: var(--seafoam);
+  --color-brass: var(--brass);
+  --color-sand: var(--sand);
+  --font-sans: 'Outfit', 'Inter', sans-serif;
+  --glass-white: rgba(255, 255, 255, 0.05);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Fluid Typography --- */
+.text-fluid-9xl {
+  font-size: clamp(3.5rem, 15vw, 10rem);
+}
+.text-fluid-8xl {
+  font-size: clamp(3rem, 12vw, 8rem);
+}
+.text-fluid-7xl {
+  font-size: clamp(2.5rem, 10vw, 6rem);
+}
+
+/* --- Nautical Immersive Effects --- */
+
+.sea-gradient {
+  background: linear-gradient(180deg, #004777 0%, #001220 100%);
+}
+
+.abyss-gradient {
+  background: radial-gradient(circle at center, #001f3f 0%, #001220 100%);
+}
+
+.sea-glass {
+  background: var(--glass-sea);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(130, 238, 253, 0.1);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(130, 238, 253, 0.5);
+}
+
+/* --- Wave Animations --- */
+
+@keyframes wave-move {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes wave-ups {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+.wave-animate {
+  animation: wave-move 15s linear infinite;
+}
+
+.bobbing {
+  animation: wave-ups 4s ease-in-out infinite;
+}
+
+.bobbing-delayed {
+  animation: wave-ups 4s ease-in-out infinite;
+  animation-delay: 2s;
+}
+
+/* Custom Scrollbar Nautical Style */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--deep-navy);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--ocean-blue);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--seafoam);
+}
+
+/* Components Layout */
+.section-wave-divider {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.porthole {
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  border: 4px solid var(--brass);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 15px rgba(197, 160, 89, 0.3);
+  overflow: hidden;
+  position: relative;
+}
+
+.hull-shape {
+  border-radius: 30px 100px 30px 100px;
+  overflow: hidden;
+}
+
+.nav-link-nautical {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.nav-link-nautical::before {
+  content: '⚓';
+  position: absolute;
+  left: -20px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  transform: rotate(-30deg);
+}
+
+.nav-link-nautical:hover::before {
+  opacity: 1;
+  left: -25px;
+  transform: rotate(0);
 }
