@@ -137,7 +137,7 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-12 gap-20 items-center">
             <RevealSection className="lg:col-span-5 relative">
               <div className="porthole w-full aspect-square shadow-2xl">
-                 <img src="https://images.unsplash.com/photo-1518837691462-13619b76ad89?q=80&w=1000&auto=format" alt="Ocean Deep" className="w-full h-full object-cover" />
+                 <img src="/about.jfif" alt="Ocean Deep" className="w-full h-full object-cover" />
               </div>
               {/* Nautical Compass Decor */}
               <div className="absolute -top-10 -left-10 w-24 h-24 border border-brass/30 rounded-full animate-spin-slow opacity-20" />

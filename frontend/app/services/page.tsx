@@ -21,7 +21,7 @@ export default async function ServicesPage() {
       <section className="bg-navy pt-60 pb-32 px-6 relative overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-40">
            <img 
-            src="https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?q=80&w=2034&auto=format" 
+            src="/layanan.jfif" 
             alt="Fisheries Research" 
             className="w-full h-full object-cover"
           />
