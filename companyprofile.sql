@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Waktu pembuatan: 12 Apr 2026 pada 07.16
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.2.12
+-- Host: localhost:3306
+-- Generation Time: Apr 14, 2026 at 02:13 PM
+-- Server version: 8.4.3
+-- PHP Version: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,123 +18,172 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `company_profile_db`
+-- Database: `companyprofile`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `cache`
+-- Table structure for table `abouts`
 --
 
-CREATE TABLE `cache` (
-  `key` varchar(255) NOT NULL,
-  `value` mediumtext NOT NULL,
-  `expiration` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `cache_locks`
---
-
-CREATE TABLE `cache_locks` (
-  `key` varchar(255) NOT NULL,
-  `owner` varchar(255) NOT NULL,
-  `expiration` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Struktur dari tabel `contact_messages`
---
-
-CREATE TABLE `contact_messages` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+CREATE TABLE `abouts` (
+  `id` bigint UNSIGNED NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `vision` text COLLATE utf8mb4_unicode_ci,
+  `mission` text COLLATE utf8mb4_unicode_ci,
+  `values` json DEFAULT NULL,
+  `hero_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hero_subtitle` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hero_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `contact_messages`
+-- Dumping data for table `abouts`
+--
+
+INSERT INTO `abouts` (`id`, `description`, `vision`, `mission`, `values`, `hero_title`, `hero_subtitle`, `hero_image`, `created_at`, `updated_at`) VALUES
+(1, 'Kami adalah perusahaan bla bla', '1. saya malas\n2. saya gak tau\n3. saya lebih gak ta', 'saya gak tawu\ngak tau juga\nsaya malas', '\"[{\\\"title\\\":\\\"Efisiensi Operasional\\\",\\\"description\\\":\\\"Optimalisasi rantai pasok kelautan yang presisi.\\\",\\\"icon\\\":\\\"\\\"},{\\\"title\\\":\\\"Kualitas Standar Ekspor\\\",\\\"description\\\":\\\"Hanya produk terbaik yang lolos seleksi kualitas.\\\",\\\"icon\\\":\\\"\\\"},{\\\"title\\\":\\\"Keberlanjutan Ekosistem\\\",\\\"description\\\":\\\"Menjaga keseimbangan laut untuk masa depan.\\\",\\\"icon\\\":\\\"\\\"}]\"', 'Perikanan Lestari', 'Masa depan cerah', NULL, '2026-04-14 02:04:43', '2026-04-14 07:06:56');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `about_settings`
+--
+
+CREATE TABLE `about_settings` (
+  `id` bigint UNSIGNED NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `about_settings`
+--
+
+INSERT INTO `about_settings` (`id`, `key`, `value`, `created_at`, `updated_at`) VALUES
+(1, 'hero_title', 'Tentang Kami', '2026-04-13 13:15:46', '2026-04-13 13:30:08'),
+(2, 'hero_subtitle', 'Komitmen kami untuk menjaga laut dan menyejahterakan nelayan Indonesia.', '2026-04-13 13:15:46', '2026-04-13 13:30:08'),
+(3, 'main_content', 'gktw males', '2026-04-13 13:15:46', '2026-04-13 13:30:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cache`
+--
+
+CREATE TABLE `cache` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` bigint NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cache_locks`
+--
+
+CREATE TABLE `cache_locks` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` bigint NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `contact_messages`
+--
+
+CREATE TABLE `contact_messages` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `contact_messages`
 --
 
 INSERT INTO `contact_messages` (`id`, `name`, `email`, `message`, `is_read`, `created_at`, `updated_at`) VALUES
 (1, 'MUHAMAD FAZRI HAFIZ', 'fazrihafidz120@gmail.com', 'gajelas', 1, '2026-04-11 07:04:57', '2026-04-11 11:42:19'),
-(2, 'anggay', 'anggay@gmail.com', 'lamar kerja dong, bisa gk', 0, '2026-04-11 11:42:11', '2026-04-11 11:42:11'),
-(3, 'anuan', 'anuan@gmail.com', 'website gajelas, btw info loker', 0, '2026-04-11 11:47:30', '2026-04-11 11:47:30');
+(2, 'anggay', 'anggay@gmail.com', 'lamar kerja dong, bisa gk', 1, '2026-04-11 11:42:11', '2026-04-13 07:18:15'),
+(3, 'anuan', 'anuan@gmail.com', 'website gajelas, btw info loker', 1, '2026-04-11 11:47:30', '2026-04-14 05:46:28');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `failed_jobs`
+-- Table structure for table `failed_jobs`
 --
 
 CREATE TABLE `failed_jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `uuid` varchar(255) NOT NULL,
-  `connection` text NOT NULL,
-  `queue` text NOT NULL,
-  `payload` longtext NOT NULL,
-  `exception` longtext NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `id` bigint UNSIGNED NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `jobs`
+-- Table structure for table `jobs`
 --
 
 CREATE TABLE `jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `queue` varchar(255) NOT NULL,
-  `payload` longtext NOT NULL,
-  `attempts` tinyint(3) UNSIGNED NOT NULL,
-  `reserved_at` int(10) UNSIGNED DEFAULT NULL,
-  `available_at` int(10) UNSIGNED NOT NULL,
-  `created_at` int(10) UNSIGNED NOT NULL
+  `id` bigint UNSIGNED NOT NULL,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint UNSIGNED NOT NULL,
+  `reserved_at` int UNSIGNED DEFAULT NULL,
+  `available_at` int UNSIGNED NOT NULL,
+  `created_at` int UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `job_batches`
+-- Table structure for table `job_batches`
 --
 
 CREATE TABLE `job_batches` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `total_jobs` int(11) NOT NULL,
-  `pending_jobs` int(11) NOT NULL,
-  `failed_jobs` int(11) NOT NULL,
-  `failed_job_ids` longtext NOT NULL,
-  `options` mediumtext DEFAULT NULL,
-  `cancelled_at` int(11) DEFAULT NULL,
-  `created_at` int(11) NOT NULL,
-  `finished_at` int(11) DEFAULT NULL
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int NOT NULL,
+  `pending_jobs` int NOT NULL,
+  `failed_jobs` int NOT NULL,
+  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+  `cancelled_at` int DEFAULT NULL,
+  `created_at` int NOT NULL,
+  `finished_at` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `migrations`
+-- Table structure for table `migrations`
 --
 
 CREATE TABLE `migrations` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `migration` varchar(255) NOT NULL,
-  `batch` int(11) NOT NULL
+  `id` int UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `migrations`
+-- Dumping data for table `migrations`
 --
 
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
@@ -145,59 +194,107 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (5, '2026_04_11_095011_create_pages_table', 1),
 (6, '2026_04_11_095012_create_portfolios_table', 1),
 (7, '2026_04_11_095013_create_services_table', 1),
-(8, '2026_04_11_095014_create_contact_messages_table', 1);
+(8, '2026_04_11_095014_create_contact_messages_table', 1),
+(9, '2026_04_13_054905_create_about_settings_table', 2),
+(10, '2026_04_13_055034_create_visi_table', 2),
+(11, '2026_04_13_055102_create_misi_table', 2),
+(12, '2026_04_13_055128_create_nilai_table', 2),
+(13, '2026_04_13_133004_create_abouts_table', 3),
+(14, '2026_04_13_192513_add_image_to_services_table', 4);
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pages`
+-- Table structure for table `misi`
 --
 
-CREATE TABLE `pages` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `slug` varchar(255) NOT NULL,
-  `content` text NOT NULL,
-  `featured_image` varchar(255) DEFAULT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT 1,
+CREATE TABLE `misi` (
+  `id` bigint UNSIGNED NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `pages`
+-- Dumping data for table `misi`
 --
 
-INSERT INTO `pages` (`id`, `title`, `slug`, `content`, `featured_image`, `status`, `created_at`, `updated_at`) VALUES
-(3, 'PERIKANAN', 'perikanan', '<p>Perikanan adalah...</p><p>Kami bergerak di bidang...</p>', NULL, 0, '2026-04-11 07:59:25', '2026-04-11 08:01:07'),
-(29, 'Komit', 'komit', '<section style=\"padding:70px 20px; background:#ffffff; font-family:Arial, sans-serif;\">\r\n\r\n  <div style=\"max-width:950px; margin:auto; text-align:center; margin-bottom:55px;\">\r\n    <h1 style=\"font-size:38px; color:#0a3d62; margin-bottom:12px;\">\r\n      Komitmen Kami Untuk Laut Indonesia\r\n    </h1>\r\n    <p style=\"font-size:18px; color:#5c6b7a; line-height:1.7;\">\r\n      Menjaga kelestarian ekosistem laut melalui inovasi, edukasi, dan pengelolaan sumber daya berkelanjutan.\r\n    </p>\r\n  </div>\r\n\r\n  <div style=\"display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:30px; max-width:1200px; margin:auto;\">\r\n\r\n    <div style=\"background:#f7fbff; border-radius:18px; padding:30px; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=900\"\r\n           style=\"width:100%; height:200px; object-fit:cover; border-radius:14px; margin-bottom:20px;\">\r\n      <h2 style=\"color:#0077cc; margin-top:0;\">Konservasi Terumbu Karang</h2>\r\n      <p style=\"color:#444; line-height:1.7;\">\r\n        Mendukung perlindungan terumbu karang sebagai rumah bagi ribuan spesies laut.\r\n      </p>\r\n    </div>\r\n\r\n    <div style=\"background:#f7fbff; border-radius:18px; padding:30px; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=900\"\r\n           style=\"width:100%; height:200px; object-fit:cover; border-radius:14px; margin-bottom:20px;\">\r\n      <h2 style=\"color:#0077cc; margin-top:0;\">Budidaya Berkelanjutan</h2>\r\n      <p style=\"color:#444; line-height:1.7;\">\r\n        Mengembangkan sistem budidaya ikan modern yang efisien dan ramah lingkungan.\r\n      </p>\r\n    </div>\r\n\r\n    <div style=\"background:#f7fbff; border-radius:18px; padding:30px; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1626808642875-0aa545482dfb?w=900\"\r\n           style=\"width:100%; height:200px; object-fit:cover; border-radius:14px; margin-bottom:20px;\">\r\n      <h2 style=\"color:#0077cc; margin-top:0;\">Edukasi Generasi Muda</h2>\r\n      <p style=\"color:#444; line-height:1.7;\">\r\n        Memberikan edukasi tentang pentingnya menjaga laut untuk masa depan Indonesia.\r\n      </p>\r\n    </div>\r\n\r\n  </div>\r\n\r\n</section>', NULL, 1, '2026-04-11 10:51:35', '2026-04-11 10:51:35'),
-(30, 'Fakta Unik', 'fakta-unik', '<section style=\"padding:70px 20px; background:linear-gradient(135deg,#eef8ff,#ffffff); font-family:Arial, sans-serif;\">\r\n\r\n  <div style=\"max-width:950px; margin:auto; text-align:center; margin-bottom:55px;\">\r\n    <h1 style=\"font-size:38px; color:#0a3d62; margin-bottom:12px;\">\r\n      6 Fakta Unik Tentang Laut\r\n    </h1>\r\n    <p style=\"font-size:18px; color:#5c6b7a; line-height:1.7;\">\r\n      Laut menyimpan keajaiban alam yang luar biasa dan penuh misteri.\r\n    </p>\r\n  </div>\r\n\r\n  <div style=\"display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:30px; max-width:1250px; margin:auto;\">\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">71% Permukaan Bumi Adalah Laut</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Sebagian besar permukaan bumi tertutup air laut sehingga bumi dikenal sebagai planet biru.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1568430462989-44163eb1752f?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Paus Bisa Berkomunikasi Jauh</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Suara paus dapat merambat sangat jauh di dalam air dan terdengar hingga ratusan kilometer.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Laut Menghasilkan Oksigen</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Fitoplankton di laut menghasilkan lebih dari setengah oksigen yang dihirup manusia.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Dasar Laut Masih Misterius</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Sebagian besar dasar laut belum pernah dijelajahi manusia secara menyeluruh.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Ada Gunung Raksasa di Laut</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Mauna Kea jika diukur dari dasar laut lebih tinggi dibanding Gunung Everest.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1520301255226-bf5f144451c1?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Beberapa Laut Bisa Menyala</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Fenomena bioluminesensi membuat air laut bercahaya biru saat malam hari.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n  </div>\r\n\r\n</section>', NULL, 1, '2026-04-11 10:58:05', '2026-04-11 10:58:05');
+INSERT INTO `misi` (`id`, `content`, `order`, `created_at`, `updated_at`) VALUES
+(2, 'Mtt', 1, '2026-04-13 13:32:03', '2026-04-13 13:34:22'),
+(3, 'Misi baru.s', 2, '2026-04-13 13:34:25', '2026-04-13 13:34:37'),
+(4, 'Misi baru...', 3, '2026-04-13 13:34:37', '2026-04-13 13:34:37'),
+(5, 'Misi baru...', 4, '2026-04-13 13:34:37', '2026-04-13 13:34:37');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `password_reset_tokens`
+-- Table structure for table `nilai`
+--
+
+CREATE TABLE `nilai` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `icon` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `order` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pages`
+--
+
+CREATE TABLE `pages` (
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `featured_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `pages`
+--
+
+INSERT INTO `pages` (`id`, `title`, `slug`, `content`, `featured_image`, `status`, `created_at`, `updated_at`) VALUES
+(3, 'PERIKANAN', 'perikanan', '<p>Perikanan adalah...</p><p>Kami bergerak di bidang...</p>', NULL, 0, '2026-04-11 07:59:25', '2026-04-11 08:01:07'),
+(29, 'Komit', 'komit', '<section style=\"padding:70px 20px; background:#ffffff; font-family:Arial, sans-serif;\">\r\n\r\n  <div style=\"max-width:950px; margin:auto; text-align:center; margin-bottom:55px;\">\r\n    <h1 style=\"font-size:38px; color:#0a3d62; margin-bottom:12px;\">\r\n      Komitmen Kami Untuk Laut Indonesia\r\n    </h1>\r\n    <p style=\"font-size:18px; color:#5c6b7a; line-height:1.7;\">\r\n      Menjaga kelestarian ekosistem laut melalui inovasi, edukasi, dan pengelolaan sumber daya berkelanjutan.\r\n    </p>\r\n  </div>\r\n\r\n  <div style=\"display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:30px; max-width:1200px; margin:auto;\">\r\n\r\n    <div style=\"background:#f7fbff; border-radius:18px; padding:30px; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1583212292454-1fe6229603b7?w=900\"\r\n           style=\"width:100%; height:200px; object-fit:cover; border-radius:14px; margin-bottom:20px;\">\r\n      <h2 style=\"color:#0077cc; margin-top:0;\">Konservasi Terumbu Karang</h2>\r\n      <p style=\"color:#444; line-height:1.7;\">\r\n        Mendukung perlindungan terumbu karang sebagai rumah bagi ribuan spesies laut.\r\n      </p>\r\n    </div>\r\n\r\n    <div style=\"background:#f7fbff; border-radius:18px; padding:30px; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=900\"\r\n           style=\"width:100%; height:200px; object-fit:cover; border-radius:14px; margin-bottom:20px;\">\r\n      <h2 style=\"color:#0077cc; margin-top:0;\">Budidaya Berkelanjutan</h2>\r\n      <p style=\"color:#444; line-height:1.7;\">\r\n        Mengembangkan sistem budidaya ikan modern yang efisien dan ramah lingkungan.\r\n      </p>\r\n    </div>\r\n\r\n    <div style=\"background:#f7fbff; border-radius:18px; padding:30px; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1626808642875-0aa545482dfb?w=900\"\r\n           style=\"width:100%; height:200px; object-fit:cover; border-radius:14px; margin-bottom:20px;\">\r\n      <h2 style=\"color:#0077cc; margin-top:0;\">Edukasi Generasi Muda</h2>\r\n      <p style=\"color:#444; line-height:1.7;\">\r\n        Memberikan edukasi tentang pentingnya menjaga laut untuk masa depan Indonesia.\r\n      </p>\r\n    </div>\r\n\r\n  </div>\r\n\r\n</section>', NULL, 0, '2026-04-11 10:51:35', '2026-04-13 07:22:30'),
+(30, 'Fakta Unik', 'fakta-unik', '<section style=\"padding:70px 20px; background:linear-gradient(135deg,#eef8ff,#ffffff); font-family:Arial, sans-serif;\">\r\n\r\n  <div style=\"max-width:950px; margin:auto; text-align:center; margin-bottom:55px;\">\r\n    <h1 style=\"font-size:38px; color:#0a3d62; margin-bottom:12px;\">\r\n      6 Fakta Unik Tentang Laut\r\n    </h1>\r\n    <p style=\"font-size:18px; color:#5c6b7a; line-height:1.7;\">\r\n      Laut menyimpan keajaiban alam yang luar biasa dan penuh misteri.\r\n    </p>\r\n  </div>\r\n\r\n  <div style=\"display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:30px; max-width:1250px; margin:auto;\">\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">71% Permukaan Bumi Adalah Laut</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Sebagian besar permukaan bumi tertutup air laut sehingga bumi dikenal sebagai planet biru.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1568430462989-44163eb1752f?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Paus Bisa Berkomunikasi Jauh</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Suara paus dapat merambat sangat jauh di dalam air dan terdengar hingga ratusan kilometer.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1500375592092-40eb2168fd21?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Laut Menghasilkan Oksigen</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Fitoplankton di laut menghasilkan lebih dari setengah oksigen yang dihirup manusia.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Dasar Laut Masih Misterius</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Sebagian besar dasar laut belum pernah dijelajahi manusia secara menyeluruh.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Ada Gunung Raksasa di Laut</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Mauna Kea jika diukur dari dasar laut lebih tinggi dibanding Gunung Everest.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n    <div style=\"background:white; border-radius:18px; overflow:hidden; box-shadow:0 8px 18px rgba(0,119,204,0.08);\">\r\n      <img src=\"https://images.unsplash.com/photo-1520301255226-bf5f144451c1?w=900\" style=\"width:100%; height:220px; object-fit:cover;\">\r\n      <div style=\"padding:25px;\">\r\n        <h2 style=\"color:#0077cc;\">Beberapa Laut Bisa Menyala</h2>\r\n        <p style=\"color:#444; line-height:1.7;\">\r\n          Fenomena bioluminesensi membuat air laut bercahaya biru saat malam hari.\r\n        </p>\r\n      </div>\r\n    </div>\r\n\r\n  </div>\r\n\r\n</section>', NULL, 1, '2026-04-11 10:58:05', '2026-04-11 10:58:05'),
+(31, 'About Us', 'about-us', '<p>Kami adalah perusahaan yang bergerak di bidang teknologi.</p>', NULL, 1, '2026-04-14 01:58:29', '2026-04-14 01:58:29'),
+(32, 'Contact Us', 'contact-us', '<p>Alamat: Jl. Contoh No. 123, Jakarta</p><p>Email: info@company.com</p>', NULL, 1, '2026-04-14 01:58:29', '2026-04-14 01:58:29');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_reset_tokens`
 --
 
 CREATE TABLE `password_reset_tokens` (
-  `email` varchar(255) NOT NULL,
-  `token` varchar(255) NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `personal_access_tokens`
+-- Table structure for table `personal_access_tokens`
 --
 
 CREATE TABLE `personal_access_tokens` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `tokenable_type` varchar(255) NOT NULL,
-  `tokenable_id` bigint(20) UNSIGNED NOT NULL,
-  `name` text NOT NULL,
-  `token` varchar(64) NOT NULL,
-  `abilities` text DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_id` bigint UNSIGNED NOT NULL,
+  `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text COLLATE utf8mb4_unicode_ci,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -205,7 +302,7 @@ CREATE TABLE `personal_access_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `personal_access_tokens`
+-- Dumping data for table `personal_access_tokens`
 --
 
 INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `name`, `token`, `abilities`, `last_used_at`, `expires_at`, `created_at`, `updated_at`) VALUES
@@ -219,75 +316,78 @@ INSERT INTO `personal_access_tokens` (`id`, `tokenable_type`, `tokenable_id`, `n
 (11, 'App\\Models\\User', 1, 'auth_token', 'e46d4fe7cee6d62e74d69eefc01ee10966bc55a32e3a58a593266fb35a1f4ca5', '[\"*\"]', '2026-04-11 11:20:06', NULL, '2026-04-11 11:20:06', '2026-04-11 11:20:06'),
 (13, 'App\\Models\\User', 1, 'auth_token', '2b5fb1157a54c894ffd3c96b2d32a973fe6c1b3753c547a4c1f0f5d668e39f56', '[\"*\"]', '2026-04-11 11:21:02', NULL, '2026-04-11 11:21:02', '2026-04-11 11:21:02'),
 (15, 'App\\Models\\User', 1, 'auth_token', 'f03778eb966f04a6f9ae62bab8bcffd4129827e49cd57021c6d651b4362011a8', '[\"*\"]', '2026-04-11 11:23:35', NULL, '2026-04-11 11:23:34', '2026-04-11 11:23:35'),
-(21, 'App\\Models\\User', 1, 'auth_token', '71e79bb0adfdb249c3cbaa748ffa1c45bd30465deedf99b434cf835038e2960f', '[\"*\"]', '2026-04-11 12:10:18', NULL, '2026-04-11 11:47:53', '2026-04-11 12:10:18');
+(21, 'App\\Models\\User', 1, 'auth_token', '71e79bb0adfdb249c3cbaa748ffa1c45bd30465deedf99b434cf835038e2960f', '[\"*\"]', '2026-04-11 12:10:18', NULL, '2026-04-11 11:47:53', '2026-04-11 12:10:18'),
+(28, 'App\\Models\\User', 1, 'auth_token', '2fbe2190aff98d3f3b64025ca009d5d2f73ed6c582c6dbaae8ec49f79e26ec6f', '[\"*\"]', '2026-04-14 12:30:11', NULL, '2026-04-14 02:08:17', '2026-04-14 12:30:11');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `portfolios`
+-- Table structure for table `portfolios`
 --
 
 CREATE TABLE `portfolios` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `full_description` longtext NOT NULL,
-  `image` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `full_description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `project_date` date NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `portfolios`
+-- Dumping data for table `portfolios`
 --
 
 INSERT INTO `portfolios` (`id`, `title`, `description`, `full_description`, `image`, `project_date`, `created_at`, `updated_at`) VALUES
-(5, 'Perusahaan Kelautan & Perikanan', 'Membangun website company profile modern untuk perusahaan yang bergerak di bidang kelautan dan perikanan. Website ini dirancang untuk menampilkan informasi perusahaan, layanan utama, hasil produksi laut, serta portfolio kegiatan operasional secara profesional dan menarik.\r\n\r\nFitur utama meliputi halaman profil perusahaan, layanan budidaya ikan, distribusi hasil laut, galeri dokumentasi, serta kontak bisnis. Desain dibuat responsif, elegan, dan mudah diakses di berbagai perangkat agar meningkatkan citra perusahaan di era digital.', 'Membangun website company profile modern untuk perusahaan yang bergerak di bidang kelautan dan perikanan. Website ini dirancang untuk menampilkan informasi perusahaan, layanan utama, hasil produksi laut, serta portfolio kegiatan operasional secara profesional dan menarik.\r\n\r\nFitur utama meliputi halaman profil perusahaan, layanan budidaya ikan, distribusi hasil laut, galeri dokumentasi, serta kontak bisnis. Desain dibuat responsif, elegan, dan mudah diakses di berbagai perangkat agar meningkatkan citra perusahaan di era digital.', 'portfolios/1kH3XKaXzJBhvjYN2h9MmOuNw4mky9aEYjWx5ZVI.jpg', '2008-12-12', '2026-04-11 10:30:58', '2026-04-11 10:30:58'),
-(6, 'Budidaya Ikan Berkelanjutan', 'Kami menjalankan program budidaya ikan modern dengan sistem pengelolaan yang efisien dan ramah lingkungan. Menggunakan teknologi terbaru untuk menjaga kualitas air, pakan, serta pertumbuhan ikan agar menghasilkan panen berkualitas tinggi. Dengan komitmen terhadap keberlanjutan, kami turut mendukung ketahanan pangan dan perkembangan sektor perikanan Indonesia.', 'Kami menjalankan program budidaya ikan modern dengan sistem pengelolaan yang efisien dan ramah lingkungan. Menggunakan teknologi terbaru untuk menjaga kualitas air, pakan, serta pertumbuhan ikan agar menghasilkan panen berkualitas tinggi. Dengan komitmen terhadap keberlanjutan, kami turut mendukung ketahanan pangan dan perkembangan sektor perikanan Indonesia.', 'portfolios/sNypcRfiJdaUTd56aPRXGubclvVl9U19YCTxOofG.jpg', '2026-04-11', '2026-04-11 11:01:40', '2026-04-11 11:01:40'),
-(7, 'Distribusi Hasil Laut Nasional', 'Kami menyediakan layanan distribusi hasil laut segar ke berbagai wilayah dengan sistem pengiriman cepat, aman, dan terjaga kualitasnya. Setiap produk ditangani dengan standar penyimpanan yang baik agar kesegaran tetap terjaga hingga sampai ke tangan pelanggan. Dengan jaringan distribusi yang luas, kami siap memenuhi kebutuhan pasar lokal maupun nasional secara konsisten dan terpercaya.', 'Kami menyediakan layanan distribusi hasil laut segar ke berbagai wilayah dengan sistem pengiriman cepat, aman, dan terjaga kualitasnya. Setiap produk ditangani dengan standar penyimpanan yang baik agar kesegaran tetap terjaga hingga sampai ke tangan pelanggan. Dengan jaringan distribusi yang luas, kami siap memenuhi kebutuhan pasar lokal maupun nasional secara konsisten dan terpercaya.', 'portfolios/kHCMqd2Gmfzvl0mBR4IZPM2Asaed9pXkwDwGFRf8.jpg', '2026-05-11', '2026-04-11 11:08:58', '2026-04-11 11:08:58');
+(5, 'Perusahaan Kelautan & Perikanan', 'Perusahaan Kelautan & Perikanan yang berfokus pada pengelolaan sumber daya laut secara berkelanjutan. Menyediakan layanan penangkapan, budidaya, pengolahan, dan distribusi hasil laut dengan standar kualitas tinggi serta komitmen terhadap kelestarian lingkungan dan pemberdayaan masyarakat pesisir.', 'Dalam setiap proses operasional, kami mengedepankan standar kualitas tinggi dengan memanfaatkan teknologi modern serta tenaga kerja profesional yang berpengalaman di bidangnya. Hal ini bertujuan untuk memastikan setiap produk hasil laut yang kami hasilkan memiliki mutu terbaik, aman dikonsumsi, dan mampu bersaing di pasar nasional maupun internasional.\r\n\r\nKami juga memiliki komitmen kuat terhadap kelestarian lingkungan dengan menerapkan praktik ramah lingkungan, seperti metode penangkapan yang selektif, pengelolaan limbah yang bertanggung jawab, serta dukungan terhadap pelestarian ekosistem laut. Bagi kami, keberlanjutan bukan hanya pilihan, tetapi menjadi prinsip utama dalam menjalankan bisnis.', 'portfolios/Xp3qr5xao5WnTNhcMaknSvLkcuR2QGloBzhYvtLh.jpg', '2026-04-13', '2026-04-11 10:30:58', '2026-04-14 07:48:30'),
+(6, 'Kerja Sama Import Ikan Tuna', 'Perusahaan kami membuka peluang kerja sama dalam kegiatan impor ikan tuna berkualitas tinggi dari berbagai negara penghasil utama. Kami berkomitmen untuk menghadirkan produk hasil laut terbaik dengan standar internasional guna memenuhi kebutuhan pasar domestik maupun industri pengolahan', 'Melalui jaringan mitra global yang terpercaya, kami memastikan setiap proses impor dilakukan secara profesional, mulai dari pemilihan supplier, pengendalian kualitas, hingga distribusi ke tangan pelanggan. Ikan tuna yang kami impor telah melalui proses seleksi ketat untuk menjamin kesegaran, kualitas, serta keamanan konsumsi sesuai dengan regulasi yang berlaku.\r\n\r\nKami juga mengutamakan transparansi dan efisiensi dalam setiap kerja sama, dengan sistem logistik yang terintegrasi serta pengawasan rantai pasok yang ketat. Hal ini memungkinkan kami untuk menjaga stabilitas pasokan dan harga, sehingga memberikan keuntungan bagi kedua belah pihak.\r\n\r\nSelain berfokus pada aspek bisnis, kami tetap menjunjung tinggi prinsip keberlanjutan dengan bekerja sama dengan supplier yang menerapkan praktik penangkapan ikan yang ramah lingkungan dan bertanggung jawab. Dengan demikian, kerja sama yang terjalin tidak hanya menguntungkan secara ekonomi, tetapi juga mendukung kelestarian sumber daya laut.', 'portfolios/B2NRf387OYEwm2ajTAyJTX6yJ9IP54JapSjQnuha.jpg', '2012-06-07', '2026-04-11 11:01:40', '2026-04-14 07:59:50'),
+(7, 'Harga Kompetitif & Terjangkau', 'Perusahaan kami dikenal luas karena mampu menawarkan harga yang lebih kompetitif dibandingkan dengan penyedia lainnya, tanpa mengorbankan kualitas produk dan layanan. Kami memahami bahwa harga menjadi salah satu faktor utama dalam pengambilan keputusan, sehingga kami berkomitmen untuk memberikan nilai terbaik bagi setiap mitra dan pelanggan.  Dengan sistem pengadaan yang efisien, jaringan supplier yang kuat, serta manajemen distribusi yang terintegrasi, kami mampu menekan biaya operasional sehingga dapat menghadirkan harga yang lebih terjangkau. Hal ini memungkinkan kami untuk menjadi pilihan utama bagi berbagai sektor, mulai dari pelaku usaha kecil hingga industri berskala besar.', 'Meskipun menawarkan harga yang kompetitif, kami tetap menjaga standar kualitas tinggi dalam setiap produk yang kami distribusikan. Bagi kami, harga yang baik harus berjalan seiring dengan kualitas dan kepercayaan.', 'portfolios/E5xIYbwWaQzkcawK2PayQYFK14Cj6NDCjAcvVMzb.jpg', '2013-06-19', '2026-04-11 11:08:58', '2026-04-14 10:33:35'),
+(9, 'Distribusi Nasional Terpercaya', 'Perusahaan kami dikenal sebagai mitra distribusi nasional yang terpercaya dengan jangkauan hampir di seluruh wilayah Indonesia. Didukung oleh sistem logistik yang terintegrasi dan jaringan distribusi yang luas, kami mampu memastikan setiap produk hasil laut dapat sampai ke berbagai daerah secara cepat, aman, dan efisien.  Kami melayani berbagai kebutuhan distribusi, mulai dari skala kecil hingga besar, termasuk untuk pasar tradisional, modern retail, hingga industri pengolahan. Dengan manajemen rantai pasok yang terorganisir dengan baik, kami mampu menjaga kualitas produk tetap segar dan sesuai standar selama proses pengiriman.', 'Kepercayaan yang telah diberikan oleh berbagai mitra di seluruh Indonesia menjadi bukti komitmen kami dalam memberikan layanan terbaik. Kami terus meningkatkan kualitas operasional dengan memanfaatkan teknologi serta pengawasan distribusi yang ketat guna memastikan ketepatan waktu dan konsistensi pasokan.\r\n\r\nDengan pengalaman dan jaringan yang terus berkembang, kami siap menjadi solusi distribusi nasional yang handal, serta mendukung pertumbuhan bisnis mitra di berbagai sektor industri perikanan dan kelautan.Kepercayaan yang telah diberikan oleh berbagai mitra di seluruh Indonesia menjadi bukti komitmen kami dalam memberikan layanan terbaik. Kami terus meningkatkan kualitas operasional dengan memanfaatkan teknologi serta pengawasan distribusi yang ketat guna memastikan ketepatan waktu dan konsistensi pasokan.\r\n\r\nDengan pengalaman dan jaringan yang terus berkembang, kami siap menjadi solusi distribusi nasional yang handal, serta mendukung pertumbuhan bisnis mitra di berbagai sektor industri perikanan dan kelautan.', 'portfolios/zJWruSKoziXSCpcQ46Ez0Z7ygGqOklJRANRa1KUn.jpg', '2026-04-09', '2026-04-13 11:18:25', '2026-04-14 09:25:45');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `services`
+-- Table structure for table `services`
 --
 
 CREATE TABLE `services` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `icon` varchar(255) DEFAULT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `icon` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `services`
+-- Dumping data for table `services`
 --
 
-INSERT INTO `services` (`id`, `title`, `description`, `icon`, `created_at`, `updated_at`) VALUES
-(2, 'Distribusi Hasil Laut Segar', 'Kami menyediakan layanan distribusi hasil laut segar dengan sistem pengiriman cepat dan terjaga kualitasnya. Setiap produk ditangani menggunakan standar penyimpanan yang baik agar kesegaran tetap terjaga hingga sampai ke pelanggan. Kami siap melayani kebutuhan restoran, pasar, hingga industri pengolahan seafood secara konsisten dan terpercaya.', '🐋', '2026-04-11 05:28:36', '2026-04-11 11:29:20'),
-(3, 'Budidaya Ikan Modern', 'Kami menghadirkan layanan budidaya ikan dengan metode modern dan pengelolaan yang efisien untuk menghasilkan produk berkualitas tinggi. Sistem pemantauan kualitas air, pakan, dan pertumbuhan ikan dilakukan secara berkala agar panen lebih optimal dan ramah lingkungan.', '🏄', '2026-04-11 05:28:36', '2026-04-11 11:29:51'),
-(4, 'Pengolahan Produk Seafood', 'Kami menyediakan layanan pengolahan hasil laut menjadi produk siap jual dengan standar kebersihan dan kualitas terbaik. Proses produksi dilakukan secara higienis untuk menjaga rasa, nutrisi, dan daya tahan produk sehingga siap memenuhi kebutuhan pasar lokal maupun nasional.', NULL, '2026-04-11 06:38:00', '2026-04-11 11:30:04');
+INSERT INTO `services` (`id`, `title`, `description`, `image`, `icon`, `created_at`, `updated_at`) VALUES
+(2, 'Distribusi Hasil Laut Segar', 'Kami menyediakan layanan distribusi hasil laut segar dengan sistem pengiriman cepat dan terjaga kualitasnya. Setiap produk ditangani menggunakan standar penyimpanan yang baik agar kesegaran tetap terjaga hingga sampai ke pelanggan. Kami siap melayani kebutuhan restoran, pasar, hingga industri pengolahan seafood secara konsisten dan terpercaya.', 'services/dbW2xGrX1YOTz7lhrODd9ccjDqMPSzfLvhI9kVsy.jpg', '🐋', '2026-04-11 05:28:36', '2026-04-14 07:27:02'),
+(4, 'Pengolahan Produk Seafood', 'Kami menyediakan layanan pengolahan hasil laut menjadi produk siap jual dengan standar kebersihan dan kualitas terbaik. Proses produksi dilakukan secara higienis untuk menjaga rasa, nutrisi, dan daya tahan produk sehingga siap memenuhi kebutuhan pasar lokal maupun nasional.', 'services/zJREgwdKCUMHB3wB7WrPIAXArhvZZ0lCOZ2DVh6N.jpg', NULL, '2026-04-11 06:38:00', '2026-04-14 07:25:55'),
+(9, 'test', 'gak tw', 'services/Chs1zYLE4KAJCi66GM6AJD0sBoLhK1VuUZnR4c0A.png', NULL, '2026-04-14 02:37:45', '2026-04-14 02:37:45');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `sessions`
+-- Table structure for table `sessions`
 --
 
 CREATE TABLE `sessions` (
-  `id` varchar(255) NOT NULL,
-  `user_id` bigint(20) UNSIGNED DEFAULT NULL,
-  `ip_address` varchar(45) DEFAULT NULL,
-  `user_agent` text DEFAULT NULL,
-  `payload` longtext NOT NULL,
-  `last_activity` int(11) NOT NULL
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_activity` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `sessions`
+-- Dumping data for table `sessions`
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
@@ -350,6 +450,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 ('LIYbUo6jzcB74aDVxLnFV8lsmvx8DY2ucwT21LSB', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'eyJfdG9rZW4iOiJqMWsxdUF1SHZPdEs0MGZaMm9lTVdSVUpiYXdnb3VkVjJ1bHF5MmowIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL3BvcnRmb2xpb3NcLzEiLCJyb3V0ZSI6bnVsbH0sIl9mbGFzaCI6eyJvbGQiOltdLCJuZXciOltdfX0=', 1775911743),
 ('lqa0jglG80xZRu0inlNxf5wvpiaiYWyIhjnFOxYF', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'eyJfdG9rZW4iOiJQTkNEbE5oR2JXd2VDM2lnVVB2ZEFUdGZjT1pyYjg4RjZNSk9oMlc4IiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL3BhZ2VzIiwicm91dGUiOm51bGx9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX19', 1775911367),
 ('ltkpKNtRmpddEvtOKg1rWzaV3a8RyRawDU2x8jq2', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'eyJfdG9rZW4iOiJqcnJjcTJHTHE2dW9WU0J4VHNKMnd0WXRnZ2ZXbTRLbmR6dkQyQmtXIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2FkbWluXC9jb250YWN0cyIsInJvdXRlIjpudWxsfSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119fQ==', 1775911332),
+('m6ykuv7dp05sxQ3BAm5kU2WFmiwUvO7r2mXJnR8o', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36', 'eyJfdG9rZW4iOiIzdzhyVFp6ZVQ2c281aG1VYnlVdGZaMUNmT3R6V1Z0R2xtQ0pxY3V0IiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwIiwicm91dGUiOm51bGx9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX19', 1775995256),
 ('MRE2pufaAmmRGicpPL9TXaAZGrsME0gTjwljYc7C', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'eyJfdG9rZW4iOiJDMFVSMFpHVldKZFZWMm44M2xPZWtrNFhkc0FxQXU0RlVoTVV5N2FSIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2FkbWluXC9jb250YWN0cyIsInJvdXRlIjpudWxsfSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119fQ==', 1775911393),
 ('MTtUPiSVasvF6zyvSqKmv5K2bAHDQJFwZieo2JB3', NULL, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'eyJfdG9rZW4iOiJBTU04NlhtbW1aZ2ZqQktUeVd4RU4xeVpyS1dzZ1plTmhnaHkyOUpTIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL3BhZ2VzIiwicm91dGUiOm51bGx9LCJfZmxhc2giOnsib2xkIjpbXSwibmV3IjpbXX19', 1775911340),
 ('MZrFuevSaCpluZedm0XBqDsd5WqPF9STYLQS6Dah', 1, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', 'eyJfdG9rZW4iOiJYbDdybE9TUE5mcFZOT2JsMUZFdkhBWVRiaWtCSFhXZ0Z1c1BzNUFtIiwiX3ByZXZpb3VzIjp7InVybCI6Imh0dHA6XC9cL2xvY2FsaG9zdDo4MDAwXC9hcGlcL2FkbWluXC9jb250YWN0cyIsInJvdXRlIjpudWxsfSwiX2ZsYXNoIjp7Im9sZCI6W10sIm5ldyI6W119fQ==', 1775912051),
@@ -412,92 +513,137 @@ INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
-  `remember_token` varchar(100) DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
 (1, 'Admin', 'admin@example.com', NULL, '$2y$12$nlQ3WiavzDNIy/J04IGVCO1fPQ.cyJf0reJjoBQ0Mr2H6PvikGgFW', NULL, '2026-04-11 05:28:37', '2026-04-11 05:28:37');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `visi`
+--
+
+CREATE TABLE `visi` (
+  `id` bigint UNSIGNED NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `visi`
+--
+
+INSERT INTO `visi` (`id`, `content`, `created_at`, `updated_at`) VALUES
+(1, 'gk tw', '2026-04-13 13:29:38', '2026-04-13 13:29:38');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indeks untuk tabel `cache`
+-- Indexes for table `abouts`
+--
+ALTER TABLE `abouts`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `about_settings`
+--
+ALTER TABLE `about_settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `about_settings_key_unique` (`key`);
+
+--
+-- Indexes for table `cache`
 --
 ALTER TABLE `cache`
   ADD PRIMARY KEY (`key`),
   ADD KEY `cache_expiration_index` (`expiration`);
 
 --
--- Indeks untuk tabel `cache_locks`
+-- Indexes for table `cache_locks`
 --
 ALTER TABLE `cache_locks`
   ADD PRIMARY KEY (`key`),
   ADD KEY `cache_locks_expiration_index` (`expiration`);
 
 --
--- Indeks untuk tabel `contact_messages`
+-- Indexes for table `contact_messages`
 --
 ALTER TABLE `contact_messages`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `failed_jobs`
+-- Indexes for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`);
 
 --
--- Indeks untuk tabel `jobs`
+-- Indexes for table `jobs`
 --
 ALTER TABLE `jobs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `jobs_queue_index` (`queue`);
 
 --
--- Indeks untuk tabel `job_batches`
+-- Indexes for table `job_batches`
 --
 ALTER TABLE `job_batches`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `migrations`
+-- Indexes for table `migrations`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `pages`
+-- Indexes for table `misi`
+--
+ALTER TABLE `misi`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `nilai`
+--
+ALTER TABLE `nilai`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `pages`
 --
 ALTER TABLE `pages`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `pages_slug_unique` (`slug`);
 
 --
--- Indeks untuk tabel `password_reset_tokens`
+-- Indexes for table `password_reset_tokens`
 --
 ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 
 --
--- Indeks untuk tabel `personal_access_tokens`
+-- Indexes for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
   ADD PRIMARY KEY (`id`),
@@ -506,19 +652,19 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `personal_access_tokens_expires_at_index` (`expires_at`);
 
 --
--- Indeks untuk tabel `portfolios`
+-- Indexes for table `portfolios`
 --
 ALTER TABLE `portfolios`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `services`
+-- Indexes for table `services`
 --
 ALTER TABLE `services`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `sessions`
+-- Indexes for table `sessions`
 --
 ALTER TABLE `sessions`
   ADD PRIMARY KEY (`id`),
@@ -526,69 +672,105 @@ ALTER TABLE `sessions`
   ADD KEY `sessions_last_activity_index` (`last_activity`);
 
 --
--- Indeks untuk tabel `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `users_email_unique` (`email`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- Indexes for table `visi`
+--
+ALTER TABLE `visi`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `contact_messages`
+-- AUTO_INCREMENT for table `abouts`
+--
+ALTER TABLE `abouts`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `about_settings`
+--
+ALTER TABLE `about_settings`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `contact_messages`
 --
 ALTER TABLE `contact_messages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `failed_jobs`
+-- AUTO_INCREMENT for table `failed_jobs`
 --
 ALTER TABLE `failed_jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `jobs`
+-- AUTO_INCREMENT for table `jobs`
 --
 ALTER TABLE `jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `migrations`
+-- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT untuk tabel `pages`
+-- AUTO_INCREMENT for table `misi`
+--
+ALTER TABLE `misi`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `nilai`
+--
+ALTER TABLE `nilai`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `pages`
 --
 ALTER TABLE `pages`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
--- AUTO_INCREMENT untuk tabel `personal_access_tokens`
+-- AUTO_INCREMENT for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
--- AUTO_INCREMENT untuk tabel `portfolios`
+-- AUTO_INCREMENT for table `portfolios`
 --
 ALTER TABLE `portfolios`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT untuk tabel `services`
+-- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT untuk tabel `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `visi`
+--
+ALTER TABLE `visi`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
